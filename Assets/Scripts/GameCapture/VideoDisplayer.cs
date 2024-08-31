@@ -1,10 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-
-#if UNITY_STANDALONE_WIN
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
-#endif
 
 namespace ResizableCapturedSource
 {
