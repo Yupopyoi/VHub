@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Run Unity Test
-    runs-on: ubuntu-latest
+    runs-on: StandaloneWindows64
     steps:
     
       # Checkout
