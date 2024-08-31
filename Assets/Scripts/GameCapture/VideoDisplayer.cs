@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
+// using NAudio.Wave;
+// using NAudio.Wave.SampleProviders;
 
 namespace ResizableCapturedSource
 {
@@ -15,10 +15,10 @@ namespace ResizableCapturedSource
         private RawImage _rawImageDisplayVideo;
 
         // NAudio Objects
-        private WaveInEvent _waveIn;
-        private BufferedWaveProvider _bufferedWaveProvider;
-        private WaveOutEvent _waveOut;
-        private VolumeSampleProvider _volumeProvider;
+        //private WaveInEvent _waveIn;
+        //private BufferedWaveProvider _bufferedWaveProvider;
+        //private WaveOutEvent _waveOut;
+        //private VolumeSampleProvider _volumeProvider;
 
         // Audio Configration
         private bool _isMute = false;
@@ -150,11 +150,11 @@ namespace ResizableCapturedSource
 
 
         #endregion
-
+	/*
         private void OnDataAvailable(object sender, WaveInEventArgs e)
         {
-            _bufferedWaveProvider.AddSamples(e.Buffer, 0, e.BytesRecorded);
-        }
+            //_bufferedWaveProvider.AddSamples(e.Buffer, 0, e.BytesRecorded);
+        }*/
 
         // ----------------------------------------------------------------------
 
@@ -179,7 +179,7 @@ namespace ResizableCapturedSource
         {
             if (deviceIndex < 0) return;
             if (Microphone.devices.Length <= deviceIndex) return;
-
+		/*
             _waveIn = new WaveInEvent
             {
                 DeviceNumber = deviceIndex,
@@ -203,13 +203,13 @@ namespace ResizableCapturedSource
             {
                 _waveIn.StartRecording();
                 _waveOut.Play();
-            }
+            }*/
         }
 
         private void Mute()
         {
             KillAudio();
-
+	    /*	
             _bufferedWaveProvider = new BufferedWaveProvider(_waveIn.WaveFormat);
 
             _volumeProvider = new VolumeSampleProvider(_bufferedWaveProvider.ToSampleProvider())
@@ -218,16 +218,16 @@ namespace ResizableCapturedSource
             };
 
             _waveOut.Init(_volumeProvider);
-
+	    */
             _isMute = true;
         }
 
         private void Unmute()
         {
-            if (_waveIn == null || _waveOut == null) return;
+            //if (_waveIn == null || _waveOut == null) return;
 
-            _waveIn.StartRecording();
-            _waveOut.Play();
+            //_waveIn.StartRecording();
+            //_waveOut.Play();
 
             _isMute = false;
         }
@@ -248,8 +248,8 @@ namespace ResizableCapturedSource
 
         public void KillAudio()
         {
-            _waveIn?.StopRecording();
-            _waveOut?.Stop();
+            //_waveIn?.StopRecording();
+            //_waveOut?.Stop();
         }
 
         // ----------------------------------------------------------------------
