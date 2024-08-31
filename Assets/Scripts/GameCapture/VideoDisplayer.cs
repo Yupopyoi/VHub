@@ -4,6 +4,7 @@ using UnityEngine.UI;
 namespace GameCapture
 {
     [RequireComponent(typeof(RawImage))]
+    [RequireComponent(typeof(RawImageTransformer))]
     public class VideoDisplayer : MonoBehaviour
     {
         // Web Camera Device. This includes the switch screen.
@@ -16,9 +17,12 @@ namespace GameCapture
         [Tooltip("Specify the camera device index to use by default. Set to 0 if you have no reason.")]
         [SerializeField, Range(0, 10)] int _defaultVideoDeviceIndex = 0;
 
+        private RawImageTransformer _rawImageTransformer;
+
         private void Start()
         {
             _rawImageDisplayVideo = GetComponent<RawImage>();
+            _rawImageTransformer = GetComponent<RawImageTransformer>();
 
             _videoDeviceIndex = _defaultVideoDeviceIndex;
             
@@ -72,6 +76,8 @@ namespace GameCapture
             _rawImageDisplayVideo.texture = _webCamTexture;
 
             _webCamTexture.Play();
+
+            _rawImageTransformer.SetAspectRatio(CameraResolution());
             _videoDeviceIndex = deviceIndex;
         }
 
@@ -90,4 +96,4 @@ namespace GameCapture
             KillVideo();
         }
     }
-}// namespace ResizableCapturedSource
+}// namespace GameCapture
