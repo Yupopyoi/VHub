@@ -490,8 +490,8 @@ GameObject:
   - component: {fileID: 1601936122}
   - component: {fileID: 1601936121}
   - component: {fileID: 1601936120}
-  - component: {fileID: 1601936119}
   - component: {fileID: 1601936123}
+  - component: {fileID: 1601936119}
   - component: {fileID: 1601936124}
   m_Layer: 5
   m_Name: RawImageDisplayVideo
@@ -545,12 +545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6924e5e548615704eb1623e7ef24b39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _samplingRate: 48000
-  _channel: 1
-  _volume: 50
-  _defaultVideoDeviceIndex: 0
-  _defaultAudioDeviceIndex: 0
-  _startInMute: 0
+  _defaultVideoDeviceIndex: 1
 --- !u!114 &1601936121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -598,6 +593,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10273c06a8541691e955a85814e4cd47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _audioSystem: 0
+  _samplingRate: 48000
+  _channel: 1
+  _volume: 50
+  _defaultAudioDeviceIndex: 0
+  _startInMute: 0
 --- !u!82 &1601936124
 AudioSource:
   m_ObjectHideFlags: 0
