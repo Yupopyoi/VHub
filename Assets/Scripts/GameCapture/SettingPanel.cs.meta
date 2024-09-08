@@ -1,0 +1,29 @@
+fileFormatVersion: 2
+guid: b1fd4fa69f7e30b4e850616f8c161841
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _tmpFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - _canvas: {instanceID: 0}
+  - _parentRawImage: {instanceID: 0}
+  - _menuRectTransform: {instanceID: 0}
+  - _mainPanel: {instanceID: 0}
+  - _videoDevicesDropdown: {instanceID: 0}
+  - _audioDevicesDropdown: {instanceID: 0}
+  - _audioSystemDropdown: {instanceID: 0}
+  - _samplingRateDropdown: {instanceID: 0}
+  - _channelDropdown: {instanceID: 0}
+  - _lockToggle: {instanceID: 0}
+  - _stickOutToggle: {instanceID: 0}
+  - _flipToggle: {instanceID: 0}
+  - _muteToggle: {instanceID: 0}
+  - _orderSlider: {instanceID: 0}
+  - _orderValueText: {instanceID: 0}
+  - _volumeSlider: {instanceID: 0}
+  - _volumeValueText: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
