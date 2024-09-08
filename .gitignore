@@ -70,3 +70,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Unnecessary Large Files
+/[Pp]ackages/com.github.homuler.mediapipe/Runtime/Plugins/iOS/*
+/[Pp]ackages/com.github.homuler.mediapipe/Runtime/Plugins/Android/*
