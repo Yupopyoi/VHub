@@ -64,21 +64,6 @@ namespace GameCapture
         #region Properties
 
         public bool IsMute() => _isMute;
-        public int AudioDeviceIndex() => _audioDeviceIndex;
-        public SampleRate SamplingRate() => _samplingRate;
-        public int Volume
-        {
-            get
-            {
-                return _volume;
-            }
-            set
-            {
-                if (value < 0) _volume = 0;
-                else if (value > 100) _volume = 100;
-                else _volume = value;
-            }
-        }
         public string[] AudioDeviceNames
         {
             get
@@ -89,6 +74,39 @@ namespace GameCapture
                     devicesNames[i] = Microphone.devices[i];
                 }
                 return (string[])devicesNames.Clone();
+            }
+        }
+        public int AudioDeviceIndex() => _audioDeviceIndex;
+        public int AudioSystemIndex
+        {
+            get
+            {
+                if (_audioSystem == AudioSystem.NAudio_Recommended) return 0;
+                else if (_audioSystem == AudioSystem.Unity_Built_In) return 1;
+                else return -1;
+            }
+            set
+            {
+                int index = value;
+
+                if (index == 0) _audioSystem = AudioSystem.NAudio_Recommended;
+                else if (index == 1) _audioSystem = AudioSystem.Unity_Built_In;
+            }
+        }
+        public SampleRate SamplingRate() => _samplingRate;
+        public void SetSamplingRate(int hz)
+        {
+            switch(hz)
+            {
+                case 44100:
+                    _samplingRate = SampleRate.Rate_44100Hz;
+                    break;
+                case 48000:
+                    _samplingRate = SampleRate.Rate_48000Hz;
+                    break;
+                case 96000:
+                    _samplingRate = SampleRate.Rate_96000Hz;
+                    break;
             }
         }
         public int AudioChannelIndex
@@ -118,7 +136,19 @@ namespace GameCapture
                 else Debug.LogError("An invalid index was specified.");
             }
         }
-
+        public int Volume
+        {
+            get
+            {
+                return _volume;
+            }
+            set
+            {
+                if (value < 0) _volume = 0;
+                else if (value > 100) _volume = 100;
+                else _volume = value;
+            }
+        }
         #endregion
 
         void Start()
@@ -170,6 +200,8 @@ namespace GameCapture
         {
             #if UNITY_STANDALONE_WIN
 
+            _audioSource.enabled = false;
+
             _micName = Microphone.devices[deviceIndex];
 
             _waveIn = new WaveInEvent
@@ -206,6 +238,8 @@ namespace GameCapture
 
         private void PlayUsingAudioSource(int deviceIndex)
         {
+            _audioSource.enabled = true;
+
             _micName = Microphone.devices[deviceIndex];
             _micClip = Microphone.Start(_micName, true, 10, _samplingRate.GetHashCode());
             _audioSource.clip = _micClip;
@@ -217,9 +251,9 @@ namespace GameCapture
             _audioSource.Play();
         }
 
-        public void ChangeMuteState()
+        public void ChangeMuteState(bool isMute)
         {
-            _isMute = !_isMute;
+            _isMute = isMute;
 
             if (_isMute)
             {
