@@ -203,6 +203,6 @@ class HandLandmarkerRunner{
   -OnHandLandmarkDetectionOutput() : void
 }
 
-note left: Attach to a empty object.
+note left: Attach to an empty object.
 
 @enduml
