@@ -161,7 +161,7 @@ class TaskRunner{
 }
 
 BaseVisionTaskApi <|-- HandLandmarker
-BaseVisionTaskApi ..> TaskRunner
+TaskRunner <.. BaseVisionTaskApi
 
 class BaseVisionTaskApi{
   #SendLiveStreamData() : void
