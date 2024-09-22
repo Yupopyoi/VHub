@@ -1,4 +1,4 @@
-@startuml
+@startuml Classes_HandLandmarker
 
 title MediaPipe Unity Plugin HandLandmarker
 
