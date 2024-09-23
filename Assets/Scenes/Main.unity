@@ -3650,8 +3650,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 759589134}
-  - component: {fileID: 759589136}
   - component: {fileID: 759589135}
+  - component: {fileID: 759589136}
   m_Layer: 5
   m_Name: Annotation
   m_TagString: Untagged
@@ -3703,7 +3703,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 759589133}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b085c374a6772aba491e20d7d9d980db, type: 3}
+  m_Script: {fileID: 11500000, guid: 5c939d63fdb5e654181fbf4cec34f6be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 385597882712093263}
@@ -4897,7 +4897,7 @@ MonoBehaviour:
   _bootstrapPrefab: {fileID: 968918444066301895, guid: 1146a9de09159a948b683e94fb3d3c95, type: 3}
   screen: {fileID: 1715511751}
   runningMode: 0
-  _handLandmarkerResultAnnotationController: {fileID: 759589136}
+  _handLandmarkerResultProvider: {fileID: 759589136}
 --- !u!1 &991622743
 GameObject:
   m_ObjectHideFlags: 0
@@ -6944,7 +6944,7 @@ MonoBehaviour:
       - m_Target: {fileID: 981964617}
         m_TargetAssemblyTypeName: Mediapipe.Unity.Yupopyoi.HandLandmark.HandLandmarkDetector,
           Assembly-CSharp
-        m_MethodName: onChangedCameraDevice
+        m_MethodName: OnChangedCameraDevice
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
