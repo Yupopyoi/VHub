@@ -52,10 +52,6 @@ namespace Mediapipe.Unity
             mask.Dispose();
           }
         }
-        if (_currentTarget.poseLandmarks?.Count > 0)
-        {
-            Debug.Log(_currentTarget.poseLandmarks[0].landmarks[0]); // landmarks[0] = nose
-        }
         annotation.Draw(_currentTarget.poseLandmarks, _visualizeZ);
       }
     }
