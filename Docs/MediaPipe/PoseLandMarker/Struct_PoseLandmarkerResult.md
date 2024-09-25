@@ -18,41 +18,41 @@ There are 33 hand landmarks, each as follows.
 Google has published this information with images on [this page](https://chuoling.github.io/mediapipe/solutions/pose.html).  
 この情報については、Googleが [このページ](https://chuoling.github.io/mediapipe/solutions/pose.html) で画像付きで公開しています。
 
-| Index |    Description    |     説明　 　|
-|:------|------------------:|:-----------:|
-|    0  | nose              |　　 鼻　　　 |
-|    1  | left  eye inner   | 左目　内　　 |
-|    2  | left  eye         | 左目　　　　 |
-|    3  | left  eye outer   | 左目　外　　 |
-|    4  | right eye inner   | 右目　内　　 |
-|    5  | right eye         | 右目　　　　 |
-|    6  | right eye outer   | 右目　外　　 |
-|    7  | left  ear         | 左耳 　　　　|
-|    8  | right ear         | 右耳　　　　 |
-|    9  | mouth left        | 口　左端　　 |
-|   10  | mouth right       | 口　右端　　 |
-|   11  | left  shoulder    | 左肩　　　　 |
-|   12  | right shoulder    | 右肩　　　　 |
-|   13  | left  elbow       | 左肘　　　　 |
-|   14  | right elbow       | 右肘　　　　 |
-|   15  | left  wrist       | 左手首　　　 |
-|   16  | right wrist       | 右手首　　　 |
-|   17  | left  pinky       | 左手小指　　 |
-|   18  | right pinky       | 右手小指　　 |
-|   19  | left  index       | 左手人差し指 |
-|   20  | right index       | 右手人差し指 |
-|   21  | left  thumb       | 左手親指 　　|
-|   22  | right thumb       | 右手親指 　　|
-|   23  | left  hip         | 左尻 　　　　|
-|   24  | right hip         | 右尻 　　　　|
-|   25  | left  knee        | 左膝 　　　　|
-|   26  | right knee        | 右膝 　　　　|
-|   27  | left  ankle       | 左足首　　　 |
-|   28  | right ankle       | 右足首　　　 |
-|   29  | left  heel        | 左踵 　　　　|
-|   30  | right heel        | 右踵 　　　　|
-|   31  | left  foot index  | 左足指 　　　|
-|   32  | right foot index  | 右足指 　　　|
+| Index |    Description    |     説明　 　|     VRM Name     |
+|:------|------------------:|:-----------:|:----------------:|
+|    0  | nose              |　　 鼻　　　 |                  |
+|    1  | left  eye inner   | 左目　内　　 |                  |
+|    2  | left  eye         | 左目　　　　 |                  |
+|    3  | left  eye outer   | 左目　外　　 |                  |
+|    4  | right eye inner   | 右目　内　　 |                  |
+|    5  | right eye         | 右目　　　　 |                  |
+|    6  | right eye outer   | 右目　外　　 |                  |
+|    7  | left  ear         | 左耳 　　　　|                  |
+|    8  | right ear         | 右耳　　　　 |                  |
+|    9  | mouth left        | 口　左端　　 |                  |
+|   10  | mouth right       | 口　右端　　 |                  |
+|   11  | left  shoulder    | 左肩　　　　 | J_Bip_L_Shoulder |
+|   12  | right shoulder    | 右肩　　　　 | J_Bip_R_Shoulder |
+|   13  | left  elbow       | 左肘　　　　 | J_Bip_L_LowerArm |
+|   14  | right elbow       | 右肘　　　　 | J_Bip_R_LowerArm |
+|   15  | left  wrist       | 左手首　　　 | J_Bip_L_Hand     |
+|   16  | right wrist       | 右手首　　　 | J_Bip_R_Hand     |
+|   17  | left  pinky       | 左手小指　　 |  *- Not used -*  |
+|   18  | right pinky       | 右手小指　　 |  *- Not used -*  |
+|   19  | left  index       | 左手人差し指 |  *- Not used -*  |
+|   20  | right index       | 右手人差し指 |  *- Not used -*  |
+|   21  | left  thumb       | 左手親指 　　|  *- Not used -*  |
+|   22  | right thumb       | 右手親指 　　|  *- Not used -*  |
+|   23  | left  hip         | 左尻 　　　　| J_Bip_L_UpperLeg |
+|   24  | right hip         | 右尻 　　　　| J_Bip_R_UpperLeg |
+|   25  | left  knee        | 左膝 　　　　| J_Bip_L_LowerLeg |
+|   26  | right knee        | 右膝 　　　　| J_Bip_R_LowerLeg |
+|   27  | left  ankle       | 左足首　　　 | J_Bip_L_Foot     |
+|   28  | right ankle       | 右足首　　　 | J_Bip_R_Foot     |
+|   29  | left  heel        | 左踵 　　　　|  *- Not used -*  |
+|   30  | right heel        | 右踵 　　　　|  *- Not used -*  |
+|   31  | left  foot index  | 左足指 　　　| J_Bip_L_ToeBase  |
+|   32  | right foot index  | 右足指 　　　| J_Bip_R_ToeBase  |
 
 For example, if you want to check the coordinates of the your nose, you can write like this.  
 例えば、鼻の座標を確認したい場合はこのように書けます。
