@@ -37,11 +37,6 @@ namespace Mediapipe.Unity.Yupopyoi.HandLandmark
         {
             isStale = false;
 
-            if (_currentTarget.handedness?.Count > 0)
-            {
-                Debug.Log(_currentTarget.handedness.Count);
-            }
-
             //annotation.SetHandedness(_currentTarget.handedness);
             //annotation.Draw(_currentTarget.handLandmarks, _visualizeZ);
         }
