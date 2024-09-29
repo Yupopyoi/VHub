@@ -10,7 +10,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
     public class MediaPipeAllocator : MonoBehaviour
     {
-
+        [SerializeField] GameObject J_Bip_C_Chest;
         /*
          * [Detection]
          * 
@@ -40,10 +40,20 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             // Shoulder diff
             float shoulder_xdiff = poseTarget.poseLandmarks[0].landmarks[12].x - poseTarget.poseLandmarks[0].landmarks[11].x;
             float shoulder_ydiff = poseTarget.poseLandmarks[0].landmarks[12].y - poseTarget.poseLandmarks[0].landmarks[11].y;
+            float shoulder_zdiff = poseTarget.poseLandmarks[0].landmarks[12].z - poseTarget.poseLandmarks[0].landmarks[11].z;
 
-            double rotate_y_deg = Math.Atan((double)shoulder_ydiff / shoulder_xdiff) * 180 / Math.PI;
+            // Rotation angle around the sagittal axis (local_z)
+            float rotate_z_deg = (float)(Math.Atan((double)shoulder_ydiff / shoulder_xdiff) * 180 / Math.PI);
+
+            // Rotation angle around the longitudinal axis (local_y)
+            float rotate_y_deg = -(float)(Math.Atan((double)shoulder_zdiff / shoulder_xdiff) * 180 / Math.PI);
 
             Debug.Log(rotate_y_deg);
+
+            var localAngle = J_Bip_C_Chest.transform.localEulerAngles;
+            localAngle.y = rotate_y_deg;
+            localAngle.z = rotate_z_deg;
+            J_Bip_C_Chest.transform.localEulerAngles = localAngle;
         }
     }
 }// namespace Mediapipe.Unity.Yupopyoi.Allocator
