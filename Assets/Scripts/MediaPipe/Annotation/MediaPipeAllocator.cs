@@ -5,12 +5,15 @@ using UnityEngine;
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using Mediapipe.Tasks.Vision.PoseLandmarker;
 using System;
+using Mediapipe.Tasks.Components.Containers;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
     public class MediaPipeAllocator : MonoBehaviour
     {
         [SerializeField] GameObject J_Bip_C_Chest;
+
         /*
          * [Detection]
          * 
@@ -33,25 +36,34 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
          * 
          */
 
+        /*
+         * [NormalizedLandmark]
+         *
+         *   public readonly struct NormalizedLandmark
+         *   
+         *      public readonly float x;
+         *      public readonly float y;
+         *      public readonly float z;
+         *      public readonly float? visibility;
+         *      public readonly float? presence;
+         * 
+         */
+
         private const int QueueMaxLength = 30;
-        private Queue<float> valueQueue_1 = new Queue<float>();
-        private Queue<float> valueQueue_2 = new Queue<float>();
-        private float average_1 = 0f;
-        private float average_2 = 0f;
+        private Queue<List<Tasks.Components.Containers.NormalizedLandmark>> _poseLandmarkerResultQueue = new();
+
+        // ToDo : Create a dedicated struct
+        //private List<Tasks.Components.Containers.NormalizedLandmark> averageNormalizedLandmarks; 
 
         public void AllocatePose(PoseLandmarkerResult poseTarget)
         {
-            //Debug.Log(poseTarget.poseLandmarks[0].landmarks[11].y + " / " + poseTarget.poseLandmarks[0].landmarks[12].y);
-
             // Shoulder diff
             float shoulder_xdiff = poseTarget.poseLandmarks[0].landmarks[12].x - poseTarget.poseLandmarks[0].landmarks[11].x;
             float shoulder_ydiff = poseTarget.poseLandmarks[0].landmarks[12].y - poseTarget.poseLandmarks[0].landmarks[11].y;
             float shoulder_zdiff = poseTarget.poseLandmarks[0].landmarks[12].z - poseTarget.poseLandmarks[0].landmarks[11].z;
 
-            AddValueToQueue(poseTarget.poseLandmarks[0].landmarks[12].z, poseTarget.poseLandmarks[0].landmarks[11].z);
-            shoulder_zdiff = CalculateAverage_1() - CalculateAverage_2();
-
-            Debug.Log(shoulder_zdiff);
+            AddPoseLandmarkerToQueue(poseTarget.poseLandmarks[0].landmarks);
+            CalculateAveragePoseLandmarker(_poseLandmarkerResultQueue);
 
             // Rotation angle around the sagittal axis (local_z)
             float rotate_z_deg = (float)(Math.Atan((double)shoulder_ydiff / shoulder_xdiff) * 180 / Math.PI);
@@ -65,42 +77,52 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             J_Bip_C_Chest.transform.localEulerAngles = localAngle;
         }
 
-        private void AddValueToQueue(float value_1, float value_2)
+        private void AddPoseLandmarkerToQueue(List<Tasks.Components.Containers.NormalizedLandmark> landmarks)
         {
-            if (valueQueue_1.Count >= QueueMaxLength)
+            if (_poseLandmarkerResultQueue.Count >= QueueMaxLength)
             {
-                valueQueue_1.Dequeue();
-                valueQueue_2.Dequeue();
+                _poseLandmarkerResultQueue.Dequeue();
             }
 
-            valueQueue_1.Enqueue(value_1);
-            valueQueue_2.Enqueue(value_2);
+            _poseLandmarkerResultQueue.Enqueue(landmarks);
+
+            Debug.Log(landmarks[11].x);
         }
 
-        private float CalculateAverage_1()
+        private List<Tasks.Components.Containers.NormalizedLandmark> CalculateAveragePoseLandmarker(Queue<List<Tasks.Components.Containers.NormalizedLandmark>> landmarks)
         {
-            if (valueQueue_1.Count == 0)
-                return 0f;
+            if (landmarks.Count == 0) return new List<Tasks.Components.Containers.NormalizedLandmark>();
 
-            float sum = 0f;
-            foreach (float value in valueQueue_1)
+            int listLength = 33;
+
+            List<Tasks.Components.Containers.NormalizedLandmark> averageLandmarks = new(listLength);
+
+            for (int i = 0; i < listLength; i++)
             {
-                sum += value;
+                averageLandmarks.Add(new Tasks.Components.Containers.NormalizedLandmark());
             }
-            return sum / valueQueue_1.Count;
-        }
 
-        private float CalculateAverage_2()
-        {
-            if (valueQueue_2.Count == 0)
-                return 0f;
-
-            float sum = 0f;
-            foreach (float value in valueQueue_2)
+            /*
+            foreach (var landmark in landmarks)
             {
-                sum += value;
+                for (int i = 0; i < listLength; i++)
+                {
+                    averageLandmarks[i].x += landmark.x;
+                    averageLandmarks[i].y += landmark.y;
+                    averageLandmarks[i].z += landmark.z;              
+                }
             }
-            return sum / valueQueue_2.Count;
+
+            int queueCount = landmarks.Count;
+            for (int i = 0; i < listLength; i++)
+            {
+                averageLandmarks[i].x /= queueCount;
+                averageLandmarks[i].y /= queueCount;
+                averageLandmarks[i].z /= queueCount;
+            }
+            */
+
+            return averageLandmarks;
         }
     }
 }// namespace Mediapipe.Unity.Yupopyoi.Allocator
