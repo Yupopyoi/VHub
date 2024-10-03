@@ -4,6 +4,12 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+// Copyright (c) 2024 Yupopyoi
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 using Mediapipe.Tasks.Vision.PoseLandmarker;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +23,7 @@ namespace Mediapipe.Unity.Yupopyoi.PoseLandmark
 
         [SerializeField] private bool _visualizeZ = false;
 
-        private readonly object _currentTargetLock = new object();
+        private readonly object _currentTargetLock = new();
         private PoseLandmarkerResult _currentTarget;
 
         public void InitScreen(int maskWidth, int maskHeight) => annotation.InitMask(maskWidth, maskHeight);
