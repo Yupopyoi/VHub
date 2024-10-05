@@ -44,6 +44,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
     public class MediaPipeAllocator : MonoBehaviour
     {
+        [SerializeField] GameObject J_Bip_C_Spine;
         [SerializeField] GameObject J_Bip_C_Chest;
 
         /*
@@ -81,12 +82,30 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
          * 
          */
 
-        private const int QueueLength = 30;
-        private readonly Queue<LocalRotation> _localRotations= new();
+        private static int QueueLength = 30;
+        private readonly Queue<LocalRotation> _localRotations = new();
 
         public void AllocatePose(PoseLandmarkerResult poseTarget)
         {
             AllocateChest(poseTarget.poseLandmarks[0].landmarks[12], poseTarget.poseLandmarks[0].landmarks[11]);
+
+            float ave_shoulder_y = poseTarget.poseLandmarks[0].landmarks[12].y - poseTarget.poseLandmarks[0].landmarks[11].y;
+            float ave_shoulder_z = poseTarget.poseLandmarks[0].landmarks[12].z - poseTarget.poseLandmarks[0].landmarks[11].z;
+
+            Debug.Log(ave_shoulder_z);
+
+            float ave_hip_y = poseTarget.poseLandmarks[0].landmarks[23].y - poseTarget.poseLandmarks[0].landmarks[24].y;
+            float ave_hip_z = poseTarget.poseLandmarks[0].landmarks[23].z - poseTarget.poseLandmarks[0].landmarks[24].z;
+
+            float y = ave_shoulder_y / 2 - ave_hip_y/ 2;
+            float z = ave_shoulder_z/2 - ave_hip_z / 2;
+
+            float rot_x = (float)(Math.Atan((double)y / z) * 180 / Math.PI);
+
+
+            var localAngle = J_Bip_C_Spine.transform.localEulerAngles;
+            localAngle.x = 1.466f + rot_x;
+            J_Bip_C_Spine.transform.localEulerAngles = localAngle;
         }
 
         private void AllocateChest(Tasks.Components.Containers.NormalizedLandmark rightShoulder, /* Index : 12 */

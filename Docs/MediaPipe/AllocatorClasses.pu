@@ -1,0 +1,36 @@
+@startuml AllocatorClasses
+
+title MediaPipe Pose Allocator Classes
+
+hide empty members
+
+abstract class PoseAllocatorBase{
+    #bodyPart : GameObject
+    #landmarks : ReadOnlyCollection<NormalizedLandmark>
+    #parentRotation : LocalRotation?
+    #{static} CacheLength : int
+    #localRotationsCache : Queue<LocalRotation> 
+    +PoseAllocatorBase(GameObject, ReadOnlyCollection<NormalizedLandmark>, LocalRotation? = null) : void
+    +{abstract}Allocate() : void
+    #{abstract}AddCurrentLocalRotation(LocalRotation) : void
+    #{abstract}UpdateBodyPartAverageLocalRotation() : void
+    #{abstract}ApplyToModel() : void
+}
+
+PoseAllocatorBase <|.. ChestAllocator
+
+class ChestAllocator{
+    +Allocate() : void
+    #AddCurrentLocalRotation(LocalRotation) : void
+    #GetAverageLocalRotation() : LocalRotation
+}
+
+PoseAllocatorBase <|.. SpineAllocator
+
+class SpineAllocator{
+    +Allocate() : void
+    #AddCurrentLocalRotation(LocalRotation) : void
+    #GetAverageLocalRotation() : LocalRotation
+}
+
+@enduml
