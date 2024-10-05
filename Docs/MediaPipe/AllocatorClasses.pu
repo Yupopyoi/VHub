@@ -21,16 +21,12 @@ PoseAllocatorBase <|.. ChestAllocator
 
 class ChestAllocator{
     +Allocate() : void
-    #AddCurrentLocalRotation(LocalRotation) : void
-    #GetAverageLocalRotation() : LocalRotation
 }
 
 PoseAllocatorBase <|.. SpineAllocator
 
 class SpineAllocator{
     +Allocate() : void
-    #AddCurrentLocalRotation(LocalRotation) : void
-    #GetAverageLocalRotation() : LocalRotation
 }
 
 @enduml
