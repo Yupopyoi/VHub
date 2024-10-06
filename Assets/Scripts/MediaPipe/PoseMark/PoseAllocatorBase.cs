@@ -20,7 +20,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         protected LocalRotation? parentRotation = null;
         protected LocalRotation initialRotation;
 
-        protected readonly static int CacheLength = 30;
+        protected readonly static int CacheLength = 40;
         protected Queue<LocalRotation> localRotationsCache = new();
 
         protected LocalRotation bodyPartAverageLocalRotation;

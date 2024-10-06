@@ -48,30 +48,22 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         [SerializeField] GameObject J_Bip_C_Spine;
         [SerializeField] GameObject J_Bip_C_Chest;
 
-        /*
-         * [Detection]
-         * 
-         * Index  Body parts    ïîà       VRM Model      Axis
-         * 
-         * 11	left shoulder	ç∂å®   J_Bip_L_Shoulder   xyz
-	     * 12  right shoulder	âEå®   J_Bip_R_Shoulder   xyz
-         * 
-         * 23       left hip	ç∂êK Å@J_Bip_L_UpperLeg   xyz
-	     * 24      right hip	âEêK Å@J_Bip_R_UpperLeg   xyz
-         *  
-         */
-
         #region Allocator_and_LandmarkerLists
 
         // Chest
-        private ChestAllocator chestAllocator;
-        private readonly Tasks.Components.Containers.NormalizedLandmark[] chestLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
+        private ChestAllocator _chestAllocator;
+        private readonly Tasks.Components.Containers.NormalizedLandmark[] _chestLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
+
+        // Spine
+        private SpineAllocator _spineAllocator;
+        private readonly Tasks.Components.Containers.NormalizedLandmark[] _spineLandmarks = new Tasks.Components.Containers.NormalizedLandmark[4];
 
         #endregion
 
         private void Start()
         {
-            chestAllocator = new(J_Bip_C_Chest, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(chestLandmarks));
+            _chestAllocator = new(J_Bip_C_Chest, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_chestLandmarks));
+            _spineAllocator = new(J_Bip_C_Spine, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_spineLandmarks));
         }
 
         public void AllocatePose(PoseLandmarkerResult poseTarget)
@@ -79,12 +71,19 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             // ---- Assignment of Landmarker Results ----
 
             // Chest
-            chestLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; //  left shoulder
-            chestLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
+            _chestLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; //  left shoulder
+            _chestLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
+
+            // Spine
+            _spineLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; //  left shoulder
+            _spineLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
+            _spineLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[23]; //  left hip
+            _spineLandmarks[3] = poseTarget.poseLandmarks[0].landmarks[24]; // right hip
 
             // ---- Execute ----
-            
-            chestAllocator.Allocate();
+
+            _chestAllocator.Allocate();
+            _spineAllocator.Allocate();
         }
 
 
