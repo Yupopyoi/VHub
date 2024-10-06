@@ -8,35 +8,40 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
     public class ChestAllocator : PoseAllocatorBase
     {
+        /* 
+         * [Detection]
+         * 
+         *  LandmarksIndex     Body parts    ïîà 
+         * 
+         *        0	          left shoulder	 ç∂å®
+         *        1          right shoulder	 âEå®
+         * 
+         * [Controll]
+         * 
+         *  J_Bip_C_Chest local-y : ì∑ëÃâ°îPÇËÅ@  (Rotation around the longitudinal axis)
+         *  J_Bip_C_Chest local-z : ì∑ëÃç∂âEì|ÇµÅ@(Rotation around the sagittal axis)
+         *  
+         */
+
         public ChestAllocator(GameObject bodyPart,
-                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
-                              LocalRotation? parentRotation)
-                              : base(bodyPart, landmarks, parentRotation) { }
+                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks)
+                              : base(bodyPart, landmarks) { }
 
         public override void Allocate()
         {
-            /*
-            // Shoulder diff
-            float shoulder_xdiff = rightShoulder.x - leftShoulder.x;
-            float shoulder_ydiff = rightShoulder.y - leftShoulder.y;
-            float shoulder_zdiff = rightShoulder.z - leftShoulder.z;
+            float shoulder_xdiff = landmarks[1].x - landmarks[0].x;
+            float shoulder_ydiff = landmarks[1].y - landmarks[0].y;
+            float shoulder_zdiff = landmarks[1].z - landmarks[0].z;
 
-            float rotate_x_deg = -15.658f;
-
-            // Rotation angle around the longitudinal axis (local_y)
-            float rotate_y_deg = -(float)(Math.Atan((double)shoulder_zdiff / shoulder_xdiff) * 180 / Math.PI);
-
-            // Rotation angle around the sagittal axis (local_z)
-            float rotate_z_deg = (float)(Math.Atan((double)shoulder_ydiff / shoulder_xdiff) * 180 / Math.PI);
+            float rotate_x_deg = initialRotation.X;
+            float rotate_y_deg = initialRotation.Y - (float)(Math.Atan((double)shoulder_zdiff / shoulder_xdiff) * 180 / Math.PI);
+            float rotate_z_deg = initialRotation.Z + (float)(Math.Atan((double)shoulder_ydiff / shoulder_xdiff) * 180 / Math.PI);
 
             LocalRotation currentLocalRotation = new(rotate_x_deg, rotate_y_deg, rotate_z_deg);
             AddCurrentLocalRotation(currentLocalRotation);
 
-            LocalRotation averageLocalRotation = GetAverageLocalRotation();
-            */
-
-            //UpdateBodyPartAverageLocalRotation();
-            //ApplyToModel();
+            UpdateBodyPartAverageLocalRotation();
+            ApplyToModel();
         }
     }
 } // Mediapipe.Unity.Yupopyoi.Allocator

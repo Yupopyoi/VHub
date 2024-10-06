@@ -18,6 +18,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         protected GameObject bodyPart;
         protected ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks;
         protected LocalRotation? parentRotation = null;
+        protected LocalRotation initialRotation;
 
         protected readonly static int CacheLength = 30;
         protected Queue<LocalRotation> localRotationsCache = new();
@@ -28,11 +29,16 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         public PoseAllocatorBase(GameObject bodyPart, 
                                  ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks, 
-                                 LocalRotation? parentRotation)
+                                 LocalRotation? parentRotation = null)
         {
             this.bodyPart = bodyPart;
             this.landmarks = landmarks;
             this.parentRotation = parentRotation;
+
+            var localAngle = bodyPart.transform.localEulerAngles;
+            initialRotation.X = localAngle.x;
+            initialRotation.Y = localAngle.y;
+            initialRotation.Z = localAngle.z;
         }
 
         public abstract void Allocate();

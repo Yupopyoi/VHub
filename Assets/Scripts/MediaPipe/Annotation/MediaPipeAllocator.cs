@@ -13,6 +13,7 @@ using Mediapipe.Tasks.Vision.PoseLandmarker;
 using System;
 using Mediapipe.Tasks.Components.Containers;
 using Google.Protobuf.WellKnownTypes;
+using System.Collections.ObjectModel;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
@@ -60,107 +61,32 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
          *  
          */
 
-        /* 
-         * [Controll]
-         * 
-         *  J_Bip_C_Spine local-x : ì∑ëÃëOå„ì|ÇµÅ@(Rotation around the frontal axis)
-         *  J_Bip_C_Spine local-y : ì∑ëÃâ°îPÇËÅ@  (Rotation around the longitudinal axis)
-         *  J_Bip_C_Spine local-z : ì∑ëÃç∂âEì|ÇµÅ@(Rotation around the sagittal axis)
-         * 
-         */
+        #region Allocator_and_LandmarkerLists
 
-        /*
-         * [NormalizedLandmark]
-         *
-         *   public readonly struct NormalizedLandmark
-         *   
-         *      public readonly float x;
-         *      public readonly float y;
-         *      public readonly float z;
-         *      public readonly float? visibility;
-         *      public readonly float? presence;
-         * 
-         */
+        // Chest
+        private ChestAllocator chestAllocator;
+        private readonly Tasks.Components.Containers.NormalizedLandmark[] chestLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
 
-        private static int QueueLength = 30;
-        private readonly Queue<LocalRotation> _localRotations = new();
+        #endregion
+
+        private void Start()
+        {
+            chestAllocator = new(J_Bip_C_Chest, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(chestLandmarks));
+        }
 
         public void AllocatePose(PoseLandmarkerResult poseTarget)
         {
-            AllocateChest(poseTarget.poseLandmarks[0].landmarks[12], poseTarget.poseLandmarks[0].landmarks[11]);
+            // ---- Assignment of Landmarker Results ----
 
-            float ave_shoulder_y = poseTarget.poseLandmarks[0].landmarks[12].y - poseTarget.poseLandmarks[0].landmarks[11].y;
-            float ave_shoulder_z = poseTarget.poseLandmarks[0].landmarks[12].z - poseTarget.poseLandmarks[0].landmarks[11].z;
+            // Chest
+            chestLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; //  left shoulder
+            chestLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
 
-            Debug.Log(ave_shoulder_z);
-
-            float ave_hip_y = poseTarget.poseLandmarks[0].landmarks[23].y - poseTarget.poseLandmarks[0].landmarks[24].y;
-            float ave_hip_z = poseTarget.poseLandmarks[0].landmarks[23].z - poseTarget.poseLandmarks[0].landmarks[24].z;
-
-            float y = ave_shoulder_y / 2 - ave_hip_y/ 2;
-            float z = ave_shoulder_z/2 - ave_hip_z / 2;
-
-            float rot_x = (float)(Math.Atan((double)y / z) * 180 / Math.PI);
-
-
-            var localAngle = J_Bip_C_Spine.transform.localEulerAngles;
-            localAngle.x = 1.466f + rot_x;
-            J_Bip_C_Spine.transform.localEulerAngles = localAngle;
+            // ---- Execute ----
+            
+            chestAllocator.Allocate();
         }
 
-        private void AllocateChest(Tasks.Components.Containers.NormalizedLandmark rightShoulder, /* Index : 12 */
-                                   Tasks.Components.Containers.NormalizedLandmark leftShoulder   /* Index : 11 */ )
-        {
-            // Shoulder diff
-            float shoulder_xdiff = rightShoulder.x - leftShoulder.x;
-            float shoulder_ydiff = rightShoulder.y - leftShoulder.y;
-            float shoulder_zdiff = rightShoulder.z - leftShoulder.z;
-
-            float rotate_x_deg = -15.658f;
-
-            // Rotation angle around the longitudinal axis (local_y)
-            float rotate_y_deg = -(float)(Math.Atan((double)shoulder_zdiff / shoulder_xdiff) * 180 / Math.PI);
-
-            // Rotation angle around the sagittal axis (local_z)
-            float rotate_z_deg = (float)(Math.Atan((double)shoulder_ydiff / shoulder_xdiff) * 180 / Math.PI);
-
-            LocalRotation currentLocalRotation = new(rotate_x_deg, rotate_y_deg, rotate_z_deg);
-            AddCurrentLocalRotation(currentLocalRotation);
-
-            LocalRotation averageLocalRotation = GetAverageLocalRotation();
-
-            var localAngle = J_Bip_C_Chest.transform.localEulerAngles;
-            localAngle.x = averageLocalRotation.X;
-            localAngle.y = averageLocalRotation.Y;
-            localAngle.z = averageLocalRotation.Z;
-            J_Bip_C_Chest.transform.localEulerAngles = localAngle;
-        }
-
-        private void AddCurrentLocalRotation(LocalRotation newValue)
-        {
-            _localRotations.Enqueue(newValue);
-
-            if (_localRotations.Count > QueueLength)
-            {
-                _localRotations.Dequeue();
-            }
-        }
-
-        public LocalRotation GetAverageLocalRotation()
-        {
-            if (_localRotations.Count == 0)
-            {
-                return new(0, 0, 0);
-            }
-
-            LocalRotation sum = new(0, 0, 0);
-            foreach (var value in _localRotations)
-            {
-                sum += value;
-            }
-
-            return sum / _localRotations.Count;
-        }
 
     }
 }// namespace Mediapipe.Unity.Yupopyoi.Allocator

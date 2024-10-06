@@ -8,6 +8,7 @@ abstract class PoseAllocatorBase{
     #bodyPart : GameObject
     #landmarks : ReadOnlyCollection<NormalizedLandmark>
     #parentRotation : LocalRotation?
+    #initialRotation : LocalRotation
     #{static} CacheLength : int
     #localRotationsCache : Queue<LocalRotation> 
     +PoseAllocatorBase(GameObject, ReadOnlyCollection<NormalizedLandmark>, LocalRotation? = null) : void

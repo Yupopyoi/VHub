@@ -20,7 +20,7 @@ namespace Mediapipe.Unity.Yupopyoi.PoseLandmark
 
         private Experimental.TextureFramePool _textureFramePool;
 
-        public readonly PoseLandmarkDetectionConfig config = new PoseLandmarkDetectionConfig();
+        public readonly PoseLandmarkDetectionConfig config = new();
 
         public override void Stop()
         {
