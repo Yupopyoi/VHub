@@ -17,10 +17,11 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
     {
         protected GameObject bodyPart;
         protected ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks;
+        protected FixedAxis fixedAxis;
         protected LocalRotation? parentRotation = null;
         protected LocalRotation initialRotation;
 
-        protected readonly static int CacheLength = 40;
+        protected readonly static int CacheLength = 10;
         protected Queue<LocalRotation> localRotationsCache = new();
 
         protected LocalRotation bodyPartAverageLocalRotation;
@@ -28,11 +29,13 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         public LocalRotation BodyPartAverageLocalRotation => bodyPartAverageLocalRotation;
 
         public PoseAllocatorBase(GameObject bodyPart, 
-                                 ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks, 
+                                 ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
+                                 FixedAxis fixedAxis,
                                  LocalRotation? parentRotation = null)
         {
             this.bodyPart = bodyPart;
             this.landmarks = landmarks;
+            this.fixedAxis = fixedAxis;
             this.parentRotation = parentRotation;
 
             var localAngle = bodyPart.transform.localEulerAngles;
@@ -72,9 +75,34 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         protected virtual void ApplyToModel()
         {
             var localAngle = bodyPart.transform.localEulerAngles;
-            localAngle.x = bodyPartAverageLocalRotation.X;
-            localAngle.y = bodyPartAverageLocalRotation.Y;
-            localAngle.z = bodyPartAverageLocalRotation.Z;
+
+            if(fixedAxis.x)
+            {
+                localAngle.x = initialRotation.X;
+            }
+            else
+            {
+                localAngle.x = bodyPartAverageLocalRotation.X;
+            }
+
+            if (fixedAxis.y)
+            {
+                localAngle.y = initialRotation.Y;
+            }
+            else
+            {
+                localAngle.y = bodyPartAverageLocalRotation.Y;
+            }
+
+            if (fixedAxis.z)
+            {
+                localAngle.z = initialRotation.Z;
+            }
+            else
+            {
+                localAngle.z = bodyPartAverageLocalRotation.Z;
+            }
+
             bodyPart.transform.localEulerAngles = localAngle;
         }
     }

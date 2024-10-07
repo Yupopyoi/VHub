@@ -32,8 +32,9 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
          */
 
         public SpineAllocator(GameObject bodyPart,
-                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks)
-                              : base(bodyPart, landmarks) { }
+                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
+                              FixedAxis fixedAxis)
+                              : base(bodyPart, landmarks, fixedAxis) { }
 
         public override void Allocate()
         {
@@ -48,7 +49,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
                 currentLocalRotation = AllocateStanding();
             }
 
-            Debug.Log(landmarks[0].z.ToString("0.00") + " / " + landmarks[1].z.ToString("0.00") + " / "  + landmarks[2].z.ToString("0.00") + " / " + landmarks[3].z.ToString("0.00"));
 
             AddCurrentLocalRotation(currentLocalRotation);
 
@@ -58,9 +58,19 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         private LocalRotation AllocateSitting()
         {
-            float average_z = (landmarks[0].z + landmarks[1].z) * 0.5f;
+            float shoulderAverageY = (landmarks[0].y + landmarks[1].y) * 0.5f;
+            float hipAverageY = (landmarks[2].y + landmarks[3].y) * 0.5f;
 
-            return new LocalRotation(initialRotation.X, initialRotation.Y, initialRotation.Z);
+            float shoulderAverageZ = (landmarks[0].z + landmarks[1].z) * 0.5f;
+            float hipAverageZ = (landmarks[2].z + landmarks[3].z) * 0.5f;
+
+            float diffY = shoulderAverageY - hipAverageY;
+            float diffZ = shoulderAverageZ - hipAverageZ;
+
+            float rotate_x_deg = initialRotation.X + (float)(Math.Atan((double)diffZ / diffY) * 180 / Math.PI);
+
+
+            return new LocalRotation(rotate_x_deg, initialRotation.Y, initialRotation.Z);
         }
 
         private LocalRotation AllocateStanding()
