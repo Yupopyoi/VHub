@@ -1,3 +1,9 @@
+// Copyright (c) 2024 Yupopyoi
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file or at
+// https://opensource.org/licenses/MIT.
+
 Shader "Custom/Plane"
 {
     Properties
@@ -13,10 +19,9 @@ Shader "Custom/Plane"
         LOD 200
 
         CGPROGRAM
-        // Physically based Standard lighting model, and enable shadows on all light types
+
         #pragma surface surf Standard fullforwardshadows
 
-        // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
 
         sampler2D _MainTex;
