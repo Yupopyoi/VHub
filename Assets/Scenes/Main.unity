@@ -1261,6 +1261,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 178451668}
   m_CullTransparentMesh: 1
+--- !u!1 &213360926 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4994775075087880643, guid: 91e74bf7a915da04b81797e2ecdfec41, type: 3}
+  m_PrefabInstance: {fileID: 458010767}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &238396074
 GameObject:
   m_ObjectHideFlags: 0
@@ -2493,6 +2498,9 @@ MonoBehaviour:
   J_Bip_C_Spine: {fileID: 363108731}
   J_Bip_C_Chest: {fileID: 1595495513}
   J_Bip_L_UpperArm: {fileID: 1211006711}
+  J_Bip_R_UpperArm: {fileID: 1593290643}
+  J_Bip_L_LowerArm: {fileID: 1759248512}
+  J_Bip_R_LowerArm: {fileID: 213360926}
 --- !u!1001 &468641652
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9286,6 +9294,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1593290643 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6458712359103428045, guid: 91e74bf7a915da04b81797e2ecdfec41, type: 3}
+  m_PrefabInstance: {fileID: 458010767}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1595495513 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3667634933746971185, guid: 91e74bf7a915da04b81797e2ecdfec41, type: 3}
@@ -10937,6 +10950,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1728862223}
   m_CullTransparentMesh: 1
+--- !u!1 &1759248512 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8793910626157659892, guid: 91e74bf7a915da04b81797e2ecdfec41, type: 3}
+  m_PrefabInstance: {fileID: 458010767}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1783741553
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,25 +13,25 @@ using UnityEngine;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
-    public class LeftUpperArmAllocator : PoseAllocatorBase
+    public class LeftLowerArmAllocator : PoseAllocatorBase
     {
         /* 
          * [Detection]
          * 
          *  LandmarksIndex     Body parts    ïîà 
          * 
-         *        0	          left shoulder	 ç∂å®
-         *        1           left  elbow	 ç∂è„òr
+         *        0	          left  elbow	 ç∂ïI
+         *        1           left  wrist	 ç∂éËéÒ
          * 
          * [Controll]
          * 
-         *  J_Bip_L_UpperArm local-x : òrîPÇË
-         *  J_Bip_L_UpperArm local-y : òrëOå„
-         *  J_Bip_L_UpperArm local-z : òrè„â∫
+         *  J_Bip_L_LowerArm local-x : òrîPÇË
+         *  J_Bip_L_LowerArm local-y : òrëOå„
+         *  J_Bip_L_LowerArm local-z : òrè„â∫
          *  
          */
 
-        public LeftUpperArmAllocator(GameObject bodyPart,
+        public LeftLowerArmAllocator(GameObject bodyPart,
                               ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
                               FixedAxis fixedAxis)
                               : base(bodyPart, landmarks, fixedAxis) { }
@@ -42,9 +42,11 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             float arm_ydiff = landmarks[1].y - landmarks[0].y;
             float arm_zdiff = landmarks[1].z - landmarks[0].z;
 
+            Debug.Log(landmarks[1].y + " / " + landmarks[0].y);
+
             float rotate_x_deg = initialRotation.X;
             float rotate_y_deg = initialRotation.Y;// - (float)(Math.Atan((double)arm_zdiff / arm_xdiff) * 180 / Math.PI);
-            float rotate_z_deg = (float)(Math.Atan((double)arm_ydiff / arm_xdiff) * 180 / Math.PI);
+            float rotate_z_deg = initialRotation.Z;// (float)(Math.Atan((double)arm_ydiff / arm_xdiff) * 180 / Math.PI);
 
             LocalRotation currentLocalRotation = new(rotate_x_deg, rotate_y_deg, rotate_z_deg);
 

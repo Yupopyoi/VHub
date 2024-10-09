@@ -13,25 +13,25 @@ using UnityEngine;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
-    public class LeftUpperArmAllocator : PoseAllocatorBase
+    public class RightUpperArmAllocator : PoseAllocatorBase
     {
         /* 
          * [Detection]
          * 
-         *  LandmarksIndex     Body parts    ïîà 
+         *  LandmarksIndex     Body parts     ïîà 
          * 
-         *        0	          left shoulder	 ç∂å®
-         *        1           left  elbow	 ç∂è„òr
+         *        0	          right shoulder  âEå®
+         *        1           right  elbow	  âEè„òr
          * 
          * [Controll]
          * 
-         *  J_Bip_L_UpperArm local-x : òrîPÇË
-         *  J_Bip_L_UpperArm local-y : òrëOå„
-         *  J_Bip_L_UpperArm local-z : òrè„â∫
+         *  J_Bip_R_UpperArm local-x : òrîPÇË
+         *  J_Bip_R_UpperArm local-y : òrëOå„
+         *  J_Bip_R_UpperArm local-z : òrè„â∫
          *  
          */
 
-        public LeftUpperArmAllocator(GameObject bodyPart,
+        public RightUpperArmAllocator(GameObject bodyPart,
                               ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
                               FixedAxis fixedAxis)
                               : base(bodyPart, landmarks, fixedAxis) { }
