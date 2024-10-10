@@ -36,7 +36,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
                               FixedAxis fixedAxis)
                               : base(bodyPart, landmarks, fixedAxis) { }
 
-        public override void Allocate()
+        public override void Allocate(LocalRotation? globalRotation = null)
         {
             LocalRotation currentLocalRotation;
 

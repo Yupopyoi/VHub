@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,6 +19,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         protected GameObject bodyPart;
         protected ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks;
         protected FixedAxis fixedAxis;
+
         protected LocalRotation? parentRotation = null;
         protected LocalRotation initialRotation;
 
@@ -26,17 +28,13 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         protected LocalRotation bodyPartAverageLocalRotation;
 
-        public LocalRotation BodyPartAverageLocalRotation => bodyPartAverageLocalRotation;
-
         public PoseAllocatorBase(GameObject bodyPart, 
                                  ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
-                                 FixedAxis fixedAxis,
-                                 LocalRotation? parentRotation = null)
+                                 FixedAxis fixedAxis)
         {
             this.bodyPart = bodyPart;
             this.landmarks = landmarks;
             this.fixedAxis = fixedAxis;
-            this.parentRotation = parentRotation;
 
             var localAngle = bodyPart.transform.localEulerAngles;
             initialRotation.X = localAngle.x;
@@ -44,9 +42,15 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             initialRotation.Z = localAngle.z;
         }
 
-        public abstract void Allocate();
+        public abstract void Allocate(LocalRotation? parentRotation = null);
 
-        protected virtual void AddCurrentLocalRotation(LocalRotation currentRotation)
+        public LocalRotation LocalRotation()
+        {
+            Vector3 localRotation = bodyPart.transform.localEulerAngles;
+            return new LocalRotation(localRotation.x, localRotation.y, localRotation.z);
+        }
+
+        protected void AddCurrentLocalRotation(LocalRotation currentRotation)
         {
             localRotationsCache.Enqueue(currentRotation);
 
@@ -56,7 +60,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             }
         }
 
-        protected virtual void UpdateBodyPartAverageLocalRotation()
+        protected void UpdateBodyPartAverageLocalRotation()
         {
             if (localRotationsCache.Count == 0)
             {
@@ -72,7 +76,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             bodyPartAverageLocalRotation = sum / localRotationsCache.Count;
         }
 
-        protected virtual void ApplyToModel()
+        protected void ApplyToModel()
         {
             var localAngle = bodyPart.transform.localEulerAngles;
 
@@ -104,6 +108,28 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             }
 
             bodyPart.transform.localEulerAngles = localAngle;
+        }
+
+        // Convert to (-180 , 180]
+        protected float MakeNearZeroContinuous(float? angle)
+        {
+            if (angle > 180.0f) angle -= 360.0f;
+            if (angle < -180.0f) angle += 360.0f;
+            return (float)angle;
+        }
+
+        // Convert to [0 , 360)
+        protected float MakeNear180Continuous(float? angle)
+        {
+            if (angle < 0.0f) angle += 360.0f;
+            if (angle > 360.0f) angle -= 360.0f;
+            return (float)angle;
+        }
+
+        // Convert Tangent to Angle [deg] 
+        protected float ConvertTangentToAngle(float tangent)
+        {
+            return (float)(Math.Atan((double)tangent) * 180 / Math.PI);
         }
     }
 } // Mediapipe.Unity.Yupopyoi.Allocator

@@ -34,7 +34,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
                               FixedAxis fixedAxis)
                               : base(bodyPart, landmarks, fixedAxis) { }
 
-        public override void Allocate()
+        public override void Allocate(LocalRotation? parentRotation = null)
         {
             float shoulder_xdiff = landmarks[1].x - landmarks[0].x;
             float shoulder_ydiff = landmarks[1].y - landmarks[0].y;

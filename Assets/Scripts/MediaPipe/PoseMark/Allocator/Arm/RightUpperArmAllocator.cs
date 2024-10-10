@@ -31,22 +31,32 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
          *  
          */
 
+        private bool _isArmUp;
+
         public RightUpperArmAllocator(GameObject bodyPart,
                               ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
                               FixedAxis fixedAxis)
                               : base(bodyPart, landmarks, fixedAxis) { }
 
-        public override void Allocate()
+        public override void Allocate(LocalRotation? parentRotation = null)
         {
+            this.parentRotation = parentRotation;
+
             float arm_xdiff = landmarks[1].x - landmarks[0].x;
             float arm_ydiff = landmarks[1].y - landmarks[0].y;
             float arm_zdiff = landmarks[1].z - landmarks[0].z;
 
+            _isArmUp = arm_ydiff < 0.0f;
+
             float rotate_x_deg = initialRotation.X;
             float rotate_y_deg = initialRotation.Y;// - (float)(Math.Atan((double)arm_zdiff / arm_xdiff) * 180 / Math.PI);
-            float rotate_z_deg = (float)(Math.Atan((double)arm_ydiff / arm_xdiff) * 180 / Math.PI);
 
-            LocalRotation currentLocalRotation = new(rotate_x_deg, rotate_y_deg, rotate_z_deg);
+            float rotate_z_deg = ConvertTangentToAngle(arm_ydiff / arm_xdiff);
+
+            if (_isArmUp && rotate_z_deg < 0) rotate_z_deg += 180.0f;
+            else if (!_isArmUp && rotate_z_deg > 0) rotate_z_deg -= 180.0f;
+
+            LocalRotation currentLocalRotation = new(rotate_x_deg, rotate_y_deg, rotate_z_deg - MakeNearZeroContinuous(this.parentRotation?.Z));
 
             AddCurrentLocalRotation(currentLocalRotation);
 

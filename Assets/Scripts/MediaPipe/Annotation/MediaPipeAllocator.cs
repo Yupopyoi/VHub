@@ -14,6 +14,7 @@ using System;
 using Mediapipe.Tasks.Components.Containers;
 using Google.Protobuf.WellKnownTypes;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
@@ -76,27 +77,27 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         // Chest
         private ChestAllocator _chestAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _chestLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
-        private readonly FixedAxis _chestFixedAxis = new FixedAxis(true, true, false);
+        private readonly FixedAxis _chestFixedAxis = new(true, true, false);
 
         // Spine
         private SpineAllocator _spineAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _spineLandmarks = new Tasks.Components.Containers.NormalizedLandmark[4];
-        private readonly FixedAxis _spineFixedAxis = new FixedAxis(true, true, true);
+        private readonly FixedAxis _spineFixedAxis = new(true, true, true);
 
         // Left Upper Arm
         private LeftUpperArmAllocator _leftUpperArmAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _leftUpperArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
-        private readonly FixedAxis _leftUpperArmFixedAxis = new FixedAxis(false, false, false);
+        private readonly FixedAxis _leftUpperArmFixedAxis = new(false, false, false);
 
         // Right Upper Arm
         private RightUpperArmAllocator _rightUpperArmAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _rightUpperArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
-        private readonly FixedAxis _rightUpperArmFixedAxis = new FixedAxis(false, false, false);
+        private readonly FixedAxis _rightUpperArmFixedAxis = new(false, false, false);
 
         // Left Upper Arm
         private LeftLowerArmAllocator _leftLowerArmAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _leftLowerArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
-        private readonly FixedAxis _leftLowerArmFixedAxis = new FixedAxis(false, false, false);
+        private readonly FixedAxis _leftLowerArmFixedAxis = new(false, false, false);
 
         #endregion
 
@@ -139,9 +140,12 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             _chestAllocator.Allocate();
             _spineAllocator.Allocate();
-            _leftUpperArmAllocator.Allocate();
-            _rightUpperArmAllocator.Allocate();
-            _leftLowerArmAllocator.Allocate();
+
+            var chestLocalRotation = _chestAllocator.LocalRotation();
+
+            _leftUpperArmAllocator.Allocate(chestLocalRotation);
+            _rightUpperArmAllocator.Allocate(chestLocalRotation);
+            //_leftLowerArmAllocator.Allocate();
         }
 
 
