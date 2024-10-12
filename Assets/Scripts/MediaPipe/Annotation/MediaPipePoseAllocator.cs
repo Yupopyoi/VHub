@@ -14,7 +14,6 @@ using System;
 using Mediapipe.Tasks.Components.Containers;
 using Google.Protobuf.WellKnownTypes;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
@@ -63,8 +62,10 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         }
     }
 
-    public class MediaPipeAllocator : MonoBehaviour
+    public class MediaPipePoseAllocator : MonoBehaviour
     {
+        MediaPipeHandAllocator _mediaPipeHandAllocator;
+
         [SerializeField] GameObject J_Bip_C_Spine;
         [SerializeField] GameObject J_Bip_C_Chest;
         [SerializeField] GameObject J_Bip_L_UpperArm;
@@ -103,6 +104,8 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         private void Start()
         {
+            _mediaPipeHandAllocator = GetComponent<MediaPipeHandAllocator>();
+
             _chestAllocator = new(J_Bip_C_Chest, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_chestLandmarks), _chestFixedAxis);
             _spineAllocator = new(J_Bip_C_Spine, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_spineLandmarks), _spineFixedAxis);
             _leftUpperArmAllocator = new(J_Bip_L_UpperArm, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_leftUpperArmLandmarks), _leftUpperArmFixedAxis);
@@ -145,9 +148,12 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             _leftUpperArmAllocator.Allocate(chestLocalRotation);
             _rightUpperArmAllocator.Allocate(chestLocalRotation);
-            //_leftLowerArmAllocator.Allocate();
+
+            _leftLowerArmAllocator.Allocate(_leftUpperArmAllocator.LocalRotation());
+
+            var leftFingersTip = _mediaPipeHandAllocator.LeftFingersTip;
+
+            Debug.Log(leftFingersTip.Thumb.y + " / " + leftFingersTip.Pinky.y);
         }
-
-
     }
 }// namespace Mediapipe.Unity.Yupopyoi.Allocator

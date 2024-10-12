@@ -2477,6 +2477,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: 91e74bf7a915da04b81797e2ecdfec41, type: 3}
       insertIndex: -1
       addedObject: {fileID: 458010769}
+    - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: 91e74bf7a915da04b81797e2ecdfec41, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 458010774}
   m_SourcePrefab: {fileID: -3956505258223990651, guid: 91e74bf7a915da04b81797e2ecdfec41, type: 3}
 --- !u!1 &458010768 stripped
 GameObject:
@@ -2501,6 +2504,18 @@ MonoBehaviour:
   J_Bip_R_UpperArm: {fileID: 1593290643}
   J_Bip_L_LowerArm: {fileID: 1759248512}
   J_Bip_R_LowerArm: {fileID: 213360926}
+--- !u!114 &458010774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458010768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 745291e96c7904b46a04e73b9ddefac6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &468641652
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3992,6 +4007,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   annotation: {fileID: 385597882712093263}
+  onHandTargetUpdated:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 458010774}
+        m_TargetAssemblyTypeName: Mediapipe.Unity.Yupopyoi.Allocator.MediaPipeHandAllocator,
+          Assembly-CSharp
+        m_MethodName: AllocateHand
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _visualizeZ: 0
 --- !u!114 &759589137
 MonoBehaviour:

@@ -113,6 +113,8 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         // Convert to (-180 , 180]
         protected float MakeNearZeroContinuous(float? angle)
         {
+            if(angle == null) return 0.0f;
+
             if (angle > 180.0f) angle -= 360.0f;
             if (angle < -180.0f) angle += 360.0f;
             return (float)angle;
@@ -121,6 +123,8 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         // Convert to [0 , 360)
         protected float MakeNear180Continuous(float? angle)
         {
+            if (angle == null) return 0.0f;
+
             if (angle < 0.0f) angle += 360.0f;
             if (angle > 360.0f) angle -= 360.0f;
             return (float)angle;

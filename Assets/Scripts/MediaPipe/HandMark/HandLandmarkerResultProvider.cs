@@ -13,11 +13,15 @@
 using UnityEngine;
 
 using Mediapipe.Tasks.Vision.HandLandmarker;
+using Mediapipe.Tasks.Vision.PoseLandmarker;
+using UnityEngine.Events;
 
 namespace Mediapipe.Unity.Yupopyoi.HandLandmark
 {
     public class HandLandmarkerResultProvider : AnnotationController<MultiHandLandmarkListAnnotation>
     {
+        public UnityEvent<HandLandmarkerResult> onHandTargetUpdated;
+
         [SerializeField] private bool _visualizeZ = false;
 
         protected HandLandmarkerResult _currentTarget;
@@ -45,6 +49,11 @@ namespace Mediapipe.Unity.Yupopyoi.HandLandmark
 
             //annotation.SetHandedness(_currentTarget.handedness);
             //annotation.Draw(_currentTarget.handLandmarks, _visualizeZ);
+
+            if (_currentTarget.handLandmarks != null)
+            {
+                onHandTargetUpdated?.Invoke(_currentTarget);
+            }
         }
     }
 }
