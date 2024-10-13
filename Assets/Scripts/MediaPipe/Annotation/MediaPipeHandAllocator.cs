@@ -13,6 +13,7 @@ using System;
 using Mediapipe.Tasks.Components.Containers;
 using Google.Protobuf.WellKnownTypes;
 using System.Collections.ObjectModel;
+using System.Reflection;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
@@ -44,32 +45,96 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
     public struct FingersTip
     {
+        public Tasks.Components.Containers.NormalizedLandmark Wrist;
         public Tasks.Components.Containers.NormalizedLandmark Thumb;
+        public Tasks.Components.Containers.NormalizedLandmark Index;
         public Tasks.Components.Containers.NormalizedLandmark Pinky;
         public string HeadName;
 
-        public FingersTip(Tasks.Components.Containers.NormalizedLandmark thumb, 
+        public FingersTip(Tasks.Components.Containers.NormalizedLandmark wrist,
+                          Tasks.Components.Containers.NormalizedLandmark thumb,
+                          Tasks.Components.Containers.NormalizedLandmark index,
                           Tasks.Components.Containers.NormalizedLandmark pinky, 
                           string headName)
         {
+            Wrist = wrist;
             Thumb = thumb;
+            Index = index;
             Pinky = pinky;
             HeadName = headName;
         }
     }
 
+    public struct Palm
+    {
+        public Tasks.Components.Containers.NormalizedLandmark Wrist;
+        public Tasks.Components.Containers.NormalizedLandmark Index_MCP;
+        public Tasks.Components.Containers.NormalizedLandmark Pinky_MCP;
+        public string HeadName;
+
+        public Palm(Tasks.Components.Containers.NormalizedLandmark wrist,
+                          Tasks.Components.Containers.NormalizedLandmark index_MCP,
+                          Tasks.Components.Containers.NormalizedLandmark pinky_MCP,
+                          string headName)
+        {
+            Wrist = wrist;
+            Index_MCP = index_MCP;
+            Pinky_MCP = pinky_MCP;
+            HeadName = headName;
+        }
+
+        public readonly Vector3 NormalVector()
+        {
+            Vector3 pointA = new(Wrist.x, Wrist.y, Wrist.z);
+            Vector3 pointB = new(Index_MCP.x, Index_MCP.y, Index_MCP.z);
+            Vector3 pointC = new(Pinky_MCP.x, Pinky_MCP.y, Pinky_MCP.z);
+
+            Vector3 vectorAB = pointB - pointA;
+            Vector3 vectorAC = pointC - pointA;
+
+            Vector3 normalVector = Vector3.Cross(vectorAB, vectorAC);
+
+            normalVector.Normalize();
+
+            return normalVector;
+        }
+
+        public readonly Vector3 PerpendicularVector()
+        {
+            var vectorM = new Vector3(Index_MCP.x + Pinky_MCP.x, Index_MCP.y + Pinky_MCP.y, Index_MCP.z + Pinky_MCP.z) * 0.5f;
+            return new Vector3(vectorM.x - Wrist.x, vectorM.y - Wrist.y, vectorM.z - Wrist.z);
+        }
+
+        public readonly float PalmLength()
+        {
+            var perpendicularVector = PerpendicularVector();
+            return perpendicularVector.magnitude;
+        }
+
+        public override readonly string ToString()
+        {
+            Vector3 normalVector = NormalVector();
+
+            return $"NormalVector | X: {normalVector.x}, Y: {normalVector.y}, Z: {normalVector.z}";
+        }
+    }
+
     public class MediaPipeHandAllocator : MonoBehaviour
     {
-        FingersTip leftFingersTip;
-        FingersTip rightFingersTip;
+        FingersTip _leftFingersTip;
+        FingersTip _rightFingersTip;
+        Palm _leftPalm;
+        Palm _rightPalm;
 
         private void Start()
         {
             
         }
 
-        public FingersTip LeftFingersTip => leftFingersTip;
-        public FingersTip RightFingersTip => rightFingersTip;
+        public FingersTip LeftFingersTip => _leftFingersTip;
+        public FingersTip RightFingersTip => _rightFingersTip;
+        public Palm LeftPalm => _leftPalm;
+        public Palm RightPalm => _rightPalm;
 
         public void AllocateHand(HandLandmarkerResult handTarget)
         {
@@ -79,11 +144,21 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             {
                 if(handTarget.handedness[index].categories[0].categoryName == "Left")
                 {
-                    leftFingersTip = new(handTarget.handLandmarks[index].landmarks[4], handTarget.handLandmarks[index].landmarks[20], "Left");
+                    _leftFingersTip = new(handTarget.handLandmarks[index].landmarks[0], 
+                                          handTarget.handLandmarks[index].landmarks[4], 
+                                          handTarget.handLandmarks[index].landmarks[8], 
+                                          handTarget.handLandmarks[index].landmarks[20], "Left");
+                   
+                    _leftPalm = new(handTarget.handLandmarks[index].landmarks[0],
+                                    handTarget.handLandmarks[index].landmarks[5],
+                                    handTarget.handLandmarks[index].landmarks[17], "Left");
                 }
                 if (handTarget.handedness[index].categories[0].categoryName == "Right")
                 {
-                    rightFingersTip = new(handTarget.handLandmarks[index].landmarks[4], handTarget.handLandmarks[index].landmarks[20], "Right");
+                    _rightFingersTip = new(handTarget.handLandmarks[index].landmarks[0],
+                                           handTarget.handLandmarks[index].landmarks[4],
+                                           handTarget.handLandmarks[index].landmarks[8],
+                                           handTarget.handLandmarks[index].landmarks[20], "Right");
                 }
             }
         }

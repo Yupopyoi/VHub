@@ -97,7 +97,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         // Left Upper Arm
         private LeftLowerArmAllocator _leftLowerArmAllocator;
-        private readonly Tasks.Components.Containers.NormalizedLandmark[] _leftLowerArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
+        private readonly Tasks.Components.Containers.NormalizedLandmark[] _leftLowerArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[3];
         private readonly FixedAxis _leftLowerArmFixedAxis = new(false, false, false);
 
         #endregion
@@ -136,8 +136,9 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             _rightUpperArmLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[14]; // right elbow
 
             // Left Lower Arm
-            _leftLowerArmLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[13]; // left elbow
-            _leftLowerArmLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[15]; // left wrist
+            _leftLowerArmLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; // left shoulder
+            _leftLowerArmLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[13]; // left elbow
+            _leftLowerArmLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[15]; // left wrist
 
             // ---- Execute ----
 
@@ -149,11 +150,9 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             _leftUpperArmAllocator.Allocate(chestLocalRotation);
             _rightUpperArmAllocator.Allocate(chestLocalRotation);
 
+            var leftPalm = _mediaPipeHandAllocator.LeftPalm;
             _leftLowerArmAllocator.Allocate(_leftUpperArmAllocator.LocalRotation());
-
-            var leftFingersTip = _mediaPipeHandAllocator.LeftFingersTip;
-
-            Debug.Log(leftFingersTip.Thumb.y + " / " + leftFingersTip.Pinky.y);
+            _leftLowerArmAllocator.AllocateWithHandRotation(leftPalm);
         }
     }
 }// namespace Mediapipe.Unity.Yupopyoi.Allocator
