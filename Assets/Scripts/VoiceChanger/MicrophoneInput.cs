@@ -47,10 +47,23 @@ namespace VoiceChanger
             _audioDeviceName = Microphone.devices[audioDeviceIndex];
 
             _audioSource.clip = Microphone.Start(_audioDeviceName, true, 1, _sampleRate.GetHashCode());
-            _audioSource.loop = true;
-            _audioSource.mute = true;
 
-            while (!(Microphone.GetPosition(null) > 0)) { }
+            StartCoroutine(WaitForMicrophoneStart());
+        }
+
+        IEnumerator WaitForMicrophoneStart()
+        {
+            int count = 0;
+            while (!(Microphone.GetPosition(_audioDeviceName) > 0))
+            {
+                yield return null;
+                count++;
+                if (count > 500)
+                {
+                    Debug.LogError("Microphone failed to start.");
+                    yield break;
+                }
+            }
 
             _audioSource.Play();
         }
