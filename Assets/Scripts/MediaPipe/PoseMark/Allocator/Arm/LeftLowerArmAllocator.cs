@@ -44,16 +44,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         public void AllocateWithHandRotation(Palm leftPalm)
         {
-            Vector3 armVector = new(landmarks[1].x - landmarks[0].x, landmarks[1].y - landmarks[0].y, landmarks[1].z - landmarks[0].z);
-            Vector3 palmVector = leftPalm.PerpendicularVector();
-            Vector3 normalVector = leftPalm.NormalVector();
-
-           // Debug.Log(normalVector);
-
-            var dot = Vector3.Dot(armVector, palmVector);
-            var formedAngle = Vector3.Angle(armVector,palmVector);
-            //Debug.Log(formedAngle.ToString("0.00") + " / " + dot + " / " + dot / armVector.magnitude / palmVector.magnitude * 180 / Math.PI);
-
              // ---- Rotate Z ----
 
             float arm_xdiff = landmarks[2].x - landmarks[1].x;
@@ -80,9 +70,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             // ---- Rotate X (from Fingers Tip) ----
 
-            //Debug.Log(ConvertTangentToAngle((leftFingersTip.Thumb.y - leftFingersTip.Wrist.y) / (leftFingersTip.Thumb.z - leftFingersTip.Wrist.z)) + " / " + 
-            //ConvertTangentToAngle((leftFingersTip.Thumb.y - leftFingersTip.Wrist.y) / (leftFingersTip.Thumb.x - leftFingersTip.Wrist.x)));
-
             float distanceFromArmPlane = Utils.CalculatePointToPlaneDistance(Utils.LandmarkToVector(landmarks[2]) + leftPalm.PerpendicularVector(),
                                                                              Utils.CalculatePlaneEquation(Utils.LandmarkToVector(landmarks[0]),
                                                                                                           Utils.LandmarkToVector(landmarks[1]),
@@ -90,18 +77,14 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             float snapAngle = (float)(Math.Asin(distanceFromArmPlane / leftPalm.PalmLength()) * 180.0f / Math.PI);
 
-            //Debug.Log(distanceFromArmPlane + " / " + leftPalm.PalmLength() + " / " + snapAngle + " / " + leftPalm.NormalVector());
-
             Vector3 rotatedVector = Utils.RotateVector(leftPalm.NormalVector(), 
                                                        Vector3.Cross(leftPalm.NormalVector(), Utils.LandmarkToVector(landmarks[2]) - Utils.LandmarkToVector(landmarks[1])),
                                                        - snapAngle);
 
-            //Debug.Log(Vector3.Dot(Vector3.Cross(leftPalm.NormalVector(), Utils.LandmarkToVector(landmarks[2]) - Utils.LandmarkToVector(landmarks[1])), Utils.LandmarkToVector(landmarks[2]) - Utils.LandmarkToVector(landmarks[1])));
-            //Debug.Log(snapAngle + " / " + leftPalm.NormalVector() + " / " + rotatedVector + " / " + (Utils.LandmarkToVector(landmarks[2]) - Utils.LandmarkToVector(landmarks[1])) + " / " + Vector3.Dot(rotatedVector, (Utils.LandmarkToVector(landmarks[2]) - Utils.LandmarkToVector(landmarks[1]))));
-
             int isRotateVectorZ_Positive = rotatedVector.z > 0 ? 1 : -1;
 
             Debug.Log((rotatedVector.y + 1.0f) * 90.0f + " / " + rotatedVector.z);
+
             currentLocalRotation = new(rotate_x_deg + (rotatedVector.y + 1.0f) * -90.0f * isRotateVectorZ_Positive, rotate_y_deg, rotate_z_deg - MakeNearZeroContinuous(this.parentRotation?.Z));
 
             // ----

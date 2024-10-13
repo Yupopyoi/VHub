@@ -13,14 +13,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             return new Vector3(landmark.x, landmark.y, landmark.z);
         }
 
-        public static Vector3 CalculateNormalVectorOfPlane(Vector3 Va, Vector3 Vb, Vector3 Vc)
-        {
-            Vector3 Vab = Vb - Va;
-            Vector3 Vac = Vc - Va;
-
-            return Vector3.Cross(Vab, Vac);
-        }
-
         public static float[] CalculatePlaneEquation(Vector3 Va, Vector3 Vb, Vector3 Vc)
         {
             Vector3 Vab = Vb - Va;
