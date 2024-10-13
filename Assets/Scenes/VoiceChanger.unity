@@ -319,6 +319,7 @@ GameObject:
   - component: {fileID: 1817706394}
   - component: {fileID: 1817706393}
   - component: {fileID: 1817706392}
+  - component: {fileID: 1817706395}
   m_Layer: 0
   m_Name: MicrophoneListener
   m_TagString: Untagged
@@ -340,7 +341,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sampleRate: 48000
   _sampleSize: 1024
-  _defaultAudioDeviceIndex: 0
+  _defaultAudioDeviceIndex: 1
 --- !u!82 &1817706393
 AudioSource:
   m_ObjectHideFlags: 0
@@ -452,6 +453,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!169 &1817706395
+AudioLowPassFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817706391}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_LowpassResonanceQ: 1
+  lowpassLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.09049568
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1857257909
 GameObject:
   m_ObjectHideFlags: 0
