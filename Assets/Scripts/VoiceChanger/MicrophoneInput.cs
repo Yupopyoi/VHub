@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using System.Linq;
 
 namespace VoiceChanger
 {
@@ -34,11 +36,28 @@ namespace VoiceChanger
 
             StartMicrophone(_audioDeviceIndex);
         }
+        void Update()
+        {
+            float[] spectrum = new float[2048 * 4];
+            _audioSource.GetSpectrumData(spectrum, 0, FFTWindow.BlackmanHarris);
+
+            int[] listedSpectrum = spectrum
+                                   .Select((value, index) => new { Value = value, Index = index })
+                                   .OrderByDescending(x => x.Value)
+                                   .Select(x => x.Index)
+                                   .ToArray();
+
+            var nyquistFreq = (float)_sampleRate / 2f;
+            Debug.Log(nyquistFreq * ((float)listedSpectrum[0] / listedSpectrum.Length)+ " / " + nyquistFreq * ((float)listedSpectrum[3] / listedSpectrum.Length));
+        }
+
 
         public float[] GetAudioData()
         {
             float[] audioData = new float[_sampleSize];
             _audioSource.GetOutputData(audioData, 0);
+            Debug.Log(audioData[0] + " / " + audioData[1] + " / " + audioData[2] + " / " + audioData[3]);
+
             return audioData;
         }
 
