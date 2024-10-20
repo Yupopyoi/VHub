@@ -3,14 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Unity.VisualScripting;
+using static Mediapipe.CopyCalculatorOptions.Types;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
-    public static class Utils
+    public static class VectorUtils
     {
-        public static Vector3 LandmarkToVector(Tasks.Components.Containers.NormalizedLandmark landmark)
+        /// <summary>
+        /// Convert MediaPipe output to UnityEngine.Vector3. 
+        /// Includes conversion from left-hand to right-hand system.
+        /// </summary>
+        /// <param name="landmark"></param>
+        /// <returns></returns>
+        public static Vector3 LandmarkToUnityVector(Tasks.Components.Containers.NormalizedLandmark landmark)
         {
-            return new Vector3(landmark.x, landmark.y, landmark.z);
+            return new Vector3(landmark.x, -landmark.y, landmark.z);
+        }
+
+        public static Quaternion CalculateQuaternionOfVectorsByTwoLandmarks(Vector3 pointA, Vector3 pointB, Vector3 axis)
+        {
+            Vector3 direction = pointB - pointA;
+
+            Vector3 normalizedDirection = direction.normalized;
+
+            return Quaternion.FromToRotation(axis, normalizedDirection);
+        }
+
+        public static LocalRotation CalculateRotationOfVectorsByTwoLandmarks(Vector3 pointA, Vector3 pointB)
+        {
+            Vector3 direction = pointB - pointA;
+            Vector3 normalizedDirection = direction.normalized;
+
+            Quaternion quaternion = Quaternion.FromToRotation(Vector3.up, normalizedDirection);
+            Vector3 angles = quaternion.eulerAngles;
+
+            return new LocalRotation(angles.x, angles.y, angles.z);
         }
 
         public static float[] CalculatePlaneEquation(Vector3 Va, Vector3 Vb, Vector3 Vc)

@@ -36,15 +36,14 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         public override void Allocate(LocalRotation? parentRotation = null)
         {
-            float shoulder_xdiff = landmarks[1].x - landmarks[0].x;
-            float shoulder_ydiff = landmarks[1].y - landmarks[0].y;
-            float shoulder_zdiff = landmarks[1].z - landmarks[0].z;
+            Vector3  leftShoulderVector = VectorUtils.LandmarkToUnityVector(landmarks[0]);
+            Vector3 rightShoulderVector = VectorUtils.LandmarkToUnityVector(landmarks[1]);
 
-            float rotate_x_deg = initialRotation.X;
-            float rotate_y_deg = initialRotation.Y - (float)(Math.Atan((double)shoulder_zdiff / shoulder_xdiff) * 180 / Math.PI);
-            float rotate_z_deg = initialRotation.Z + (float)(Math.Atan((double)shoulder_ydiff / shoulder_xdiff) * 180 / Math.PI);
+            LocalRotation shoulderRotation = VectorUtils.CalculateRotationOfVectorsByTwoLandmarks(leftShoulderVector, rightShoulderVector);
 
-            LocalRotation currentLocalRotation = new(rotate_x_deg, rotate_y_deg, rotate_z_deg);
+            LocalRotation currentLocalRotation = new(initialRotation.X, 
+                                                     WrapAngle360(initialRotation.Y + shoulderRotation.Y),
+                                                     MakeNearZeroContinuous(90 - (initialRotation.Z + shoulderRotation.Z)));
 
             AddCurrentLocalRotation(currentLocalRotation);
 

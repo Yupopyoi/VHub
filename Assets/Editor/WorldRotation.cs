@@ -4,11 +4,12 @@ using UnityEditor;
 [CustomEditor(typeof(Transform))]
 public class WorldRotation : Editor
 {
+
     public override void OnInspectorGUI()
     {
-        DrawDefaultInspector();
-
         Transform targetTransform = (Transform)target;
+
+        DrawDefaultInspector();
 
         EditorGUILayout.Space();
 

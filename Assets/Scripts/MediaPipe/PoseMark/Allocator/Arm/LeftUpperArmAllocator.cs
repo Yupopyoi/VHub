@@ -40,6 +40,37 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         public override void Allocate(LocalRotation? parentRotation = null)
         {
+            Vector3 leftShoulder = VectorUtils.LandmarkToUnityVector(landmarks[0]);
+            Vector3 leftElbow = VectorUtils.LandmarkToUnityVector(landmarks[1]);
+            Vector3 rightShoulder = VectorUtils.LandmarkToUnityVector(landmarks[2]);
+
+            Vector3 diff = leftElbow - leftShoulder;
+
+            //Debug.Log(leftElbow.z + " / " + (leftElbow.z - leftShoulder.z));
+            //Debug.Log(leftElbow.z + " / " + leftShoulder.z + " / " + rightShoulder.z + " / " + (diff.x * diff.x + diff.y * diff.y));
+
+            LocalRotation shoulderRotation = VectorUtils.CalculateRotationOfVectorsByTwoLandmarks(leftShoulder, leftElbow);
+
+
+            Vector3 normalizedDirection = diff.normalized;
+
+            Quaternion quaternion = Quaternion.FromToRotation(Vector3.forward, normalizedDirection);
+            Vector3 angles = quaternion.eulerAngles;
+
+            //Debug.Log(leftElbow.z + " / " + WrapAngle360(initialRotation.Y + angles.y - 90) + " | " + quaternion.ToString());
+
+            LocalRotation currentLocalRotation = new(initialRotation.X,
+                                                     WrapAngle360(initialRotation.Y + angles.y - 90),
+                                                     MakeNearZeroContinuous(270 - initialRotation.Z - shoulderRotation.Z));
+
+
+            AddCurrentLocalRotation(currentLocalRotation);
+
+            UpdateBodyPartAverageLocalRotation();
+            ApplyToModel();
+
+            return;
+
             this.parentRotation = parentRotation;
 
             float arm_xdiff = landmarks[1].x - landmarks[0].x;
@@ -56,9 +87,9 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             if (_isArmUp && rotate_z_deg > 0) rotate_z_deg -= 180.0f;
             else if (!_isArmUp && rotate_z_deg < 0) rotate_z_deg += 180.0f;
 
-            LocalRotation currentLocalRotation = new(rotate_x_deg, rotate_y_deg, rotate_z_deg - MakeNearZeroContinuous(this.parentRotation?.Z));
+          //  LocalRotation currentLocalRotation = new(rotate_x_deg, rotate_y_deg, rotate_z_deg - MakeNearZeroContinuous(this.parentRotation?.Z));
 
-            AddCurrentLocalRotation(currentLocalRotation);
+         //   AddCurrentLocalRotation(currentLocalRotation);
 
             UpdateBodyPartAverageLocalRotation();
             ApplyToModel();

@@ -44,7 +44,29 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         public void AllocateWithHandRotation(Palm leftPalm)
         {
-             // ---- Rotate Z ----
+            Vector3 leftElbowVector = VectorUtils.LandmarkToUnityVector(landmarks[1]);
+            Vector3 leftWristVector = VectorUtils.LandmarkToUnityVector(landmarks[2]);
+
+            LocalRotation shoulderRotation = VectorUtils.CalculateRotationOfVectorsByTwoLandmarks(leftElbowVector, leftWristVector);
+
+            Debug.Log(shoulderRotation.Z + " / " + parentRotation.Value.Z +" / " + (MakeNearZeroContinuous(parentRotation.Value.Z)) + " / " + WrapAngle360(initialRotation.Z - shoulderRotation.Z - MakeNearZeroContinuous(parentRotation.Value.Z) + 270));
+            //Debug.Log(WrapAngle360(initialRotation.Z - shoulderRotation.Z + 270 + MakeNearZeroContinuous(parentRotation.Value.Z)));
+
+            LocalRotation currentLocalRotation = new(initialRotation.X,
+                                                     0,//WrapAngle360(initialRotation.Y + shoulderRotation.Y),
+                                                     WrapAngle360(initialRotation.Z - shoulderRotation.Z - MakeNearZeroContinuous(parentRotation.Value.Z) + 270));
+            //Debug.Log(currentLocalRotation.ToString());
+
+            AddCurrentLocalRotation(currentLocalRotation);
+
+            UpdateBodyPartAverageLocalRotation();
+            ApplyLocalToModel();
+
+            return;
+
+            /*
+
+            // ---- Rotate Z ----
 
             float arm_xdiff = landmarks[2].x - landmarks[1].x;
             float arm_ydiff = landmarks[2].y - landmarks[1].y;
@@ -70,15 +92,15 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             // ---- Rotate X (from Fingers Tip) ----
 
-            float distanceFromArmPlane = Utils.CalculatePointToPlaneDistance(Utils.LandmarkToVector(landmarks[2]) + leftPalm.PerpendicularVector(),
-                                                                             Utils.CalculatePlaneEquation(Utils.LandmarkToVector(landmarks[0]),
-                                                                                                          Utils.LandmarkToVector(landmarks[1]),
-                                                                                                          Utils.LandmarkToVector(landmarks[2])), false);
+            float distanceFromArmPlane = VectorUtils.CalculatePointToPlaneDistance(VectorUtils.LandmarkToUnityVector(landmarks[2]) + leftPalm.PerpendicularVector(),
+                                                                                   VectorUtils.CalculatePlaneEquation(VectorUtils.LandmarkToUnityVector(landmarks[0]),
+                                                                                                                      VectorUtils.LandmarkToUnityVector(landmarks[1]),
+                                                                                                                      VectorUtils.LandmarkToUnityVector(landmarks[2])), false);
 
             float snapAngle = (float)(Math.Asin(distanceFromArmPlane / leftPalm.PalmLength()) * 180.0f / Math.PI);
 
-            Vector3 rotatedVector = Utils.RotateVector(leftPalm.NormalVector(), 
-                                                       Vector3.Cross(leftPalm.NormalVector(), Utils.LandmarkToVector(landmarks[2]) - Utils.LandmarkToVector(landmarks[1])),
+            Vector3 rotatedVector = VectorUtils.RotateVector(leftPalm.NormalVector(), 
+                                                       Vector3.Cross(leftPalm.NormalVector(), VectorUtils.LandmarkToUnityVector(landmarks[2]) - VectorUtils.LandmarkToUnityVector(landmarks[1])),
                                                        - snapAngle);
 
             int isRotateVectorZ_Positive = rotatedVector.z > 0 ? 1 : -1;
@@ -93,6 +115,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             UpdateBodyPartAverageLocalRotation();
             ApplyToModel();
+            */
         }
     }
 } // Mediapipe.Unity.Yupopyoi.Allocator

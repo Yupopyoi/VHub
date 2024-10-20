@@ -78,7 +78,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         // Chest
         private ChestAllocator _chestAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _chestLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
-        private readonly FixedAxis _chestFixedAxis = new(true, true, false);
+        private readonly FixedAxis _chestFixedAxis = new(true, true, true);
 
         // Spine
         private SpineAllocator _spineAllocator;
@@ -87,8 +87,9 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         // Left Upper Arm
         private LeftUpperArmAllocator _leftUpperArmAllocator;
-        private readonly Tasks.Components.Containers.NormalizedLandmark[] _leftUpperArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
-        private readonly FixedAxis _leftUpperArmFixedAxis = new(false, false, false);
+        private readonly Tasks.Components.Containers.NormalizedLandmark[] _leftUpperArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[3];
+        //private readonly FixedAxis _leftUpperArmFixedAxis = new(true, false, false);
+        private readonly FixedAxis _leftUpperArmFixedAxis = new(true, true, false);
 
         // Right Upper Arm
         private RightUpperArmAllocator _rightUpperArmAllocator;
@@ -98,7 +99,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         // Left Upper Arm
         private LeftLowerArmAllocator _leftLowerArmAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _leftLowerArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[3];
-        private readonly FixedAxis _leftLowerArmFixedAxis = new(false, false, false);
+        private readonly FixedAxis _leftLowerArmFixedAxis = new(true, false, false);
 
         #endregion
 
@@ -120,39 +121,46 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             // Chest
             _chestLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; //  left shoulder
             _chestLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
+            _chestAllocator.Allocate();
 
             // Spine
             _spineLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; //  left shoulder
             _spineLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
             _spineLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[23]; //  left hip
             _spineLandmarks[3] = poseTarget.poseLandmarks[0].landmarks[24]; // right hip
+            _spineAllocator.Allocate();
+
+            // -----------------------------------------------------------------------------------------
+
+            var chestLocalRotation = _chestAllocator.LocalRotation();
 
             // Left Upper Arm
             _leftUpperArmLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; // left shoulder
             _leftUpperArmLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[13]; // left elbow
-
-            // Right Upper Arm
-            _rightUpperArmLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
-            _rightUpperArmLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[14]; // right elbow
+            _leftUpperArmLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
+            _leftUpperArmAllocator.Allocate(chestLocalRotation);
 
             // Left Lower Arm
             _leftLowerArmLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; // left shoulder
             _leftLowerArmLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[13]; // left elbow
             _leftLowerArmLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[15]; // left wrist
 
+            var leftPalm = _mediaPipeHandAllocator.LeftPalm;
+            _leftLowerArmAllocator.Allocate(_leftUpperArmAllocator.Rotation());
+            _leftLowerArmAllocator.AllocateWithHandRotation(leftPalm);
+
+            return;
+
+            // Right Upper Arm
+            _rightUpperArmLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
+            _rightUpperArmLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[14]; // right elbow
+
             // ---- Execute ----
 
-            _chestAllocator.Allocate();
-            _spineAllocator.Allocate();
-
-            var chestLocalRotation = _chestAllocator.LocalRotation();
 
             _leftUpperArmAllocator.Allocate(chestLocalRotation);
             _rightUpperArmAllocator.Allocate(chestLocalRotation);
 
-            var leftPalm = _mediaPipeHandAllocator.LeftPalm;
-            _leftLowerArmAllocator.Allocate(_leftUpperArmAllocator.LocalRotation());
-            _leftLowerArmAllocator.AllocateWithHandRotation(leftPalm);
         }
     }
 }// namespace Mediapipe.Unity.Yupopyoi.Allocator
