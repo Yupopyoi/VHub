@@ -40,7 +40,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             initialRotation.Z = localAngle.z;
         }
 
-        public abstract void Allocate(LocalRotation? parentRotation = null);
+        public abstract void ForwardAllocate(LocalRotation? parentRotation = null);
 
         public void SetFixedAxis(FixedAxis fixedAxis)
         {

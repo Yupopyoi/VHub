@@ -120,7 +120,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             // Chest
             _chestLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; //  left shoulder
             _chestLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
-            _chestAllocator.Allocate();
+            _chestAllocator.ForwardAllocate();
 
             // Spine
             _spineLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; //  left shoulder
@@ -129,7 +129,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             _spineLandmarks[3] = poseTarget.poseLandmarks[0].landmarks[24]; // right hip
             _spineLandmarks[4] = poseTarget.poseLandmarks[0].landmarks[13]; //  left elbow
             _spineLandmarks[5] = poseTarget.poseLandmarks[0].landmarks[14]; // right elbow
-            _spineAllocator.Allocate();
+            _spineAllocator.ForwardAllocate();
 
             var chestLocalRotation = _chestAllocator.LocalRotation();
             var spineLocalRotation = _spineAllocator.LocalRotation();
@@ -139,7 +139,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             _leftUpperArmLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; // left shoulder
             _leftUpperArmLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[13]; // left elbow
             _leftUpperArmLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
-            _leftUpperArmAllocator.Allocate(torsoLocalRotation);
+            _leftUpperArmAllocator.ForwardAllocate(torsoLocalRotation);
             return;
 
 
@@ -149,7 +149,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             _leftLowerArmLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[15]; // left wrist
 
             var leftPalm = _mediaPipeHandAllocator.LeftPalm;
-            _leftLowerArmAllocator.Allocate(_leftUpperArmAllocator.Rotation());
+            _leftLowerArmAllocator.ForwardAllocate(_leftUpperArmAllocator.Rotation());
             _leftLowerArmAllocator.AllocateWithHandRotation(leftPalm);
 
             return;

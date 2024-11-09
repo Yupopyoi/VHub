@@ -31,7 +31,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             initialRotation.Z = localAngle.z;
         }
 
-        public override void Allocate(LocalRotation? parentRotation = null)
+        public override void ForwardAllocate(LocalRotation? parentRotation = null)
         {
             this.parentRotation = parentRotation;
         }
