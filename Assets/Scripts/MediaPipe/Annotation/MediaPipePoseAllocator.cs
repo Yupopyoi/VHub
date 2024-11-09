@@ -38,25 +38,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         }
     }
 
-    public struct FixedAxis
-    {
-        public bool x;
-        public bool y;
-        public bool z;
-
-        public FixedAxis(bool isFixed_x = false, bool isFixed_y = false, bool isFixed_z = false)
-        {
-            x = isFixed_x;
-            y = isFixed_y;
-            z = isFixed_z;
-        }
-
-        public override readonly string ToString()
-        {
-            return $"Is Fixed : Axis x : {x}, Axis y : {y}, Axis z : {z}";
-        }
-    }
-
     public class MediaPipePoseAllocator : MonoBehaviour
     {
         MediaPipeHandAllocator _mediaPipeHandAllocator;
@@ -73,32 +54,22 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         // Chest
         private ChestAllocator _chestAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _chestLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
-        //private readonly FixedAxis _chestFixedAxis = new(true, true, true); // FullFixed
-        private readonly FixedAxis _chestFixedAxis = new(true, true, true); // 2D
-        //private readonly FixedAxis _chestFixedAxis = new(true, false, true); // 3D
 
         // Spine
         private SpineAllocator _spineAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _spineLandmarks = new Tasks.Components.Containers.NormalizedLandmark[6];
-        //private readonly FixedAxis _spineFixedAxis = new(true, true, true); // FullFixed
-        private readonly FixedAxis _spineFixedAxis = new(true, true, false); // 2D
-        //private readonly FixedAxis _spineFixedAxis = new(false, true, false); // 3D
 
         // Left Upper Arm
         private LeftUpperArmAllocator _leftUpperArmAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _leftUpperArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[3];
-        private readonly FixedAxis _leftUpperArmFixedAxis = new(false, false, false);
-        //private readonly FixedAxis _leftUpperArmFixedAxis = new(true, true, true);
 
         // Right Upper Arm
         private RightUpperArmAllocator _rightUpperArmAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _rightUpperArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[2];
-        private readonly FixedAxis _rightUpperArmFixedAxis = new(false, false, false);
 
         // Left Lower Arm
         private LeftLowerArmAllocator _leftLowerArmAllocator;
         private readonly Tasks.Components.Containers.NormalizedLandmark[] _leftLowerArmLandmarks = new Tasks.Components.Containers.NormalizedLandmark[3];
-        private readonly FixedAxis _leftLowerArmFixedAxis = new(false, true, false);
 
         #endregion
 
@@ -106,11 +77,11 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         {
             _mediaPipeHandAllocator = GetComponent<MediaPipeHandAllocator>();
 
-            _chestAllocator = new(J_Bip_C_Chest, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_chestLandmarks), _chestFixedAxis);
-            _spineAllocator = new(J_Bip_C_Spine, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_spineLandmarks), _spineFixedAxis);
-            _leftUpperArmAllocator = new(J_Bip_L_UpperArm, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_leftUpperArmLandmarks), _leftUpperArmFixedAxis);
-            _rightUpperArmAllocator = new(J_Bip_R_UpperArm, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_rightUpperArmLandmarks), _rightUpperArmFixedAxis);
-            _leftLowerArmAllocator = new(J_Bip_L_LowerArm, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_leftLowerArmLandmarks), _leftLowerArmFixedAxis);
+            _chestAllocator         = new(J_Bip_C_Chest,    new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_chestLandmarks));
+            _spineAllocator         = new(J_Bip_C_Spine,    new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_spineLandmarks));
+            _leftUpperArmAllocator  = new(J_Bip_L_UpperArm, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_leftUpperArmLandmarks));
+            _rightUpperArmAllocator = new(J_Bip_R_UpperArm, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_rightUpperArmLandmarks));
+            _leftLowerArmAllocator  = new(J_Bip_L_LowerArm, new ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark>(_leftLowerArmLandmarks));
         }
 
         public void AllocatePose(PoseLandmarkerResult poseTarget)
@@ -120,7 +91,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             // Chest
             _chestLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; //  left shoulder
             _chestLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
-            _chestAllocator.ForwardAllocate();
+            _chestAllocator.ForwardAllocate(new ForwardMessage(7));
 
             // Spine
             _spineLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; //  left shoulder
@@ -129,7 +100,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             _spineLandmarks[3] = poseTarget.poseLandmarks[0].landmarks[24]; // right hip
             _spineLandmarks[4] = poseTarget.poseLandmarks[0].landmarks[13]; //  left elbow
             _spineLandmarks[5] = poseTarget.poseLandmarks[0].landmarks[14]; // right elbow
-            _spineAllocator.ForwardAllocate();
+            _spineAllocator.ForwardAllocate(new ForwardMessage(6));
 
             var chestLocalRotation = _chestAllocator.LocalRotation();
             var spineLocalRotation = _spineAllocator.LocalRotation();
@@ -139,7 +110,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             _leftUpperArmLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; // left shoulder
             _leftUpperArmLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[13]; // left elbow
             _leftUpperArmLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
-            _leftUpperArmAllocator.ForwardAllocate(torsoLocalRotation);
+            _leftUpperArmAllocator.ForwardAllocate(new ForwardMessage(torsoLocalRotation, false, false, false));
             return;
 
 
@@ -149,7 +120,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             _leftLowerArmLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[15]; // left wrist
 
             var leftPalm = _mediaPipeHandAllocator.LeftPalm;
-            _leftLowerArmAllocator.ForwardAllocate(_leftUpperArmAllocator.Rotation());
+            _leftLowerArmAllocator.ForwardAllocate(new ForwardMessage(_leftUpperArmAllocator.Rotation(), false, true, false));
             _leftLowerArmAllocator.AllocateWithHandRotation(leftPalm);
 
             return;

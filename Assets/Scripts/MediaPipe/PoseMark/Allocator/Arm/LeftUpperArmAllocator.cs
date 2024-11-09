@@ -19,12 +19,14 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
          */
 
         public LeftUpperArmAllocator(GameObject bodyPart,
-                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
-                              FixedAxis fixedAxis)
-                              : base(bodyPart, landmarks, fixedAxis) { }
+                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks)
+                              : base(bodyPart, landmarks) { }
 
-        public override void ForwardAllocate(LocalRotation? parentRotation = null)
+        public override void ForwardAllocate(ForwardMessage msg)
         {
+            parentRotation = msg.ParentRotation();
+            SetFixedAxis(msg.FixedAxis());
+
             var leftShoulderVector  = VectorUtils.LandmarkToUnityVector(landmarks[0]);
             var leftElbowVector     = VectorUtils.LandmarkToUnityVector(landmarks[1]);
 

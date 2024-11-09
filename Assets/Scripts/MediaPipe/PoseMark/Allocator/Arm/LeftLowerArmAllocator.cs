@@ -21,9 +21,8 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
          */
 
         public LeftLowerArmAllocator(GameObject bodyPart,
-                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
-                              FixedAxis fixedAxis)
-                              : base(bodyPart, landmarks, fixedAxis) 
+                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks)
+                              : base(bodyPart, landmarks) 
         {
             var localAngle = bodyPart.transform.localEulerAngles;
             initialRotation.X = localAngle.x;
@@ -31,9 +30,10 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             initialRotation.Z = localAngle.z;
         }
 
-        public override void ForwardAllocate(LocalRotation? parentRotation = null)
+        public override void ForwardAllocate(ForwardMessage msg)
         {
-            this.parentRotation = parentRotation;
+            parentRotation = msg.ParentRotation();
+            SetFixedAxis(msg.FixedAxis());
         }
 
         public void AllocateWithHandRotation(Palm leftPalm)
@@ -171,10 +171,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             UpdateBodyPartAverageLocalRotation();
             ApplyToModel();
-
-            // ê^â° : (0.02, 0.77, 0.64) / (-0.17, 0.72, 0.67) / 36.43669 / 31.76265
-            // éŒÇﬂ : (0.25, 0.80, 0.55) / (-0.30, 0.55, 0.78) / 77.89732 / 55.50834
-            //Debug.Log(leftPalm.NormalVector() + " / " + rotatedVector + " / " + snapAngle + " / " + x_addRotation + "/" + bodyPartAverageLocalRotation.X);
 
             bodyPart.transform.Rotate(Vector3.right, bodyPartAverageLocalRotation.X, Space.Self);
 

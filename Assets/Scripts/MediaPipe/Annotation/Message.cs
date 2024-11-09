@@ -79,9 +79,52 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             PartName = partName;
         }
 
+        /// <summary>
+        /// Message with no parent part.
+        /// </summary>
+        /// <param name="fixAxisNumber"></param>
+        /// <param name="partName"></param>
+        public ForwardMessage(int fixAxisNumber, string partName = "")
+        {
+            Rx = 0.0f;
+            Ry = 0.0f;
+            Rz = 0.0f;
+
+            Fix_x = ((fixAxisNumber / 4) % 2 == 1);
+            Fix_y = ((fixAxisNumber / 2) % 2 == 1);
+            Fix_z = ((fixAxisNumber / 1) % 2 == 1);
+            PartName = partName;
+        }
+
+        public LocalRotation ParentRotation()
+        {
+            return new LocalRotation(Rx, Ry, Rz);
+        }
+
+        public FixedAxis FixedAxis()
+        {
+            return new FixedAxis(Fix_x, Fix_y, Fix_z);
+        }
+
         public override readonly string ToString()
         {
             return $"{PartName} | X: {Rx}, Y: {Ry}, Z: {Rz}";
+        }
+    }
+
+    public readonly struct ReverseMessage : IAllocatorMessage
+    {
+        public string PartName { get; }
+        public float Rx { get; }
+        public float Ry { get; }
+        public float Rz { get; }
+
+        public ReverseMessage(float add_rx, float add_ry, float add_rz, string partName = "")
+        {
+            Rx = add_rx;
+            Ry = add_ry;
+            Rz = add_rz;
+            PartName = partName;
         }
     }
 }// namespace Mediapipe.Unity.Yupopyoi.Allocator

@@ -24,14 +24,15 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
          */
 
         public SpineAllocator(GameObject bodyPart,
-                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
-                              FixedAxis fixedAxis)
-                              : base(bodyPart, landmarks, fixedAxis) { }
+                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks)
+                              : base(bodyPart, landmarks) { }
 
-        public override void ForwardAllocate(LocalRotation? globalRotation = null)
+        public override void ForwardAllocate(ForwardMessage msg)
         {
+            SetFixedAxis(msg.FixedAxis());
+
             // ---------------------------------- BASE ---------------------------------------
-            
+
             var shoulderAverageVector = VectorUtils.AverageTwoVector(VectorUtils.LandmarkToUnityVector(landmarks[0]), VectorUtils.LandmarkToUnityVector(landmarks[1]));
             var hipAverageVector = VectorUtils.AverageTwoVector(VectorUtils.LandmarkToUnityVector(landmarks[2]), VectorUtils.LandmarkToUnityVector(landmarks[3]));
 

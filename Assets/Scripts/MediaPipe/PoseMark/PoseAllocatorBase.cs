@@ -12,6 +12,20 @@ using UnityEngine;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
+    public struct FixedAxis
+    {
+        public bool x;
+        public bool y;
+        public bool z;
+
+        public FixedAxis(bool isFixed_x = false, bool isFixed_y = false, bool isFixed_z = false)
+        {
+            x = isFixed_x;
+            y = isFixed_y;
+            z = isFixed_z;
+        }
+    }
+
     public abstract class PoseAllocatorBase
     {
         protected GameObject bodyPart;
@@ -27,12 +41,10 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         protected LocalRotation bodyPartAverageLocalRotation;
 
         public PoseAllocatorBase(GameObject bodyPart, 
-                                 ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
-                                 FixedAxis fixedAxis)
+                                 ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks)
         {
             this.bodyPart = bodyPart;
             this.landmarks = landmarks;
-            this.fixedAxis = fixedAxis;
 
             var localAngle = bodyPart.transform.localEulerAngles;
             initialRotation.X = localAngle.x;
@@ -40,11 +52,11 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             initialRotation.Z = localAngle.z;
         }
 
-        public abstract void ForwardAllocate(LocalRotation? parentRotation = null);
+        public abstract void ForwardAllocate(ForwardMessage msg);
 
-        public void SetFixedAxis(FixedAxis fixedAxis)
+        protected void SetFixedAxis(FixedAxis fixedAxis)
         {
-            this.fixedAxis = fixedAxis;
+            this.fixedAxis = fixedAxis; 
         }
 
         public LocalRotation LocalRotation()
@@ -52,6 +64,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             Vector3 localRotation = bodyPart.transform.localEulerAngles;
             return new LocalRotation(localRotation.x, localRotation.y, localRotation.z);
         }
+
         public LocalRotation Rotation()
         {
             Vector3 localRotation = bodyPart.transform.eulerAngles;
@@ -132,32 +145,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         protected float WrapAngle360(float angle)
         {
             return (angle % 360 + 360) % 360;
-        }
-
-        // Set Range [min, 360]
-        protected float KeepWithinRange(float angle, float min)
-        {
-            if ((angle > min) && (angle < 360.0f))
-            {
-                return angle;
-            }
-
-            float angleBorder = min * 0.5f;
-
-            if (angle < angleBorder) return 360.0f;
-
-            return min;
-        }
-
-        // Convert Tangent to Angle [deg] 
-        protected float ConvertTangentToAngle(float tangent)
-        {
-            return (float)(Math.Atan((double)tangent) * 180 / Math.PI);
-        }
-
-        protected float ConvertTangentToAngle(float y, float x)
-        {
-            return (float)(Math.Atan(y / x) * 180 / Math.PI);
         }
     }
 } // Mediapipe.Unity.Yupopyoi.Allocator

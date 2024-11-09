@@ -19,12 +19,13 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
          */
 
         public ChestAllocator(GameObject bodyPart,
-                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks,
-                              FixedAxis fixedAxis)
-                              : base(bodyPart, landmarks, fixedAxis) { }
+                              ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks)
+                              : base(bodyPart, landmarks) { }
 
-        public override void ForwardAllocate(LocalRotation? parentRotation = null)
+        public override void ForwardAllocate(ForwardMessage msg)
         {
+            SetFixedAxis(msg.FixedAxis());
+
             var  leftShoulderVector = VectorUtils.LandmarkToUnityVector(landmarks[0]);
             var rightShoulderVector = VectorUtils.LandmarkToUnityVector(landmarks[1]);
 

@@ -73,9 +73,9 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         public string HeadName;
 
         public Palm(Tasks.Components.Containers.NormalizedLandmark wrist,
-                          Tasks.Components.Containers.NormalizedLandmark index_MCP,
-                          Tasks.Components.Containers.NormalizedLandmark pinky_MCP,
-                          string headName)
+                    Tasks.Components.Containers.NormalizedLandmark index_MCP,
+                    Tasks.Components.Containers.NormalizedLandmark pinky_MCP,
+                    string headName)
         {
             Wrist = wrist;
             Index_MCP = index_MCP;
