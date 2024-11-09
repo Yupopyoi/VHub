@@ -4,16 +4,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 using Mediapipe.Tasks.Vision.HandLandmarker;
-using System;
-using Mediapipe.Tasks.Components.Containers;
-using Google.Protobuf.WellKnownTypes;
-using System.Collections.ObjectModel;
-using System.Reflection;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
 {
@@ -43,13 +35,13 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         |   20  | Pinky TIP         | 　　子指    先端 |
     */
 
-    public struct FingersTip
+    public readonly struct FingersTip
     {
-        public Tasks.Components.Containers.NormalizedLandmark Wrist;
-        public Tasks.Components.Containers.NormalizedLandmark Thumb;
-        public Tasks.Components.Containers.NormalizedLandmark Index;
-        public Tasks.Components.Containers.NormalizedLandmark Pinky;
-        public string HeadName;
+        public Tasks.Components.Containers.NormalizedLandmark Wrist { get; }
+        public Tasks.Components.Containers.NormalizedLandmark Thumb { get; }
+        public Tasks.Components.Containers.NormalizedLandmark Index { get; }
+        public Tasks.Components.Containers.NormalizedLandmark Pinky { get; }
+        public string HeadName { get; }
 
         public FingersTip(Tasks.Components.Containers.NormalizedLandmark wrist,
                           Tasks.Components.Containers.NormalizedLandmark thumb,
@@ -65,12 +57,12 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         }
     }
 
-    public struct Palm
+    public readonly struct Palm
     {
-        public Tasks.Components.Containers.NormalizedLandmark Wrist;
-        public Tasks.Components.Containers.NormalizedLandmark Index_MCP;
-        public Tasks.Components.Containers.NormalizedLandmark Pinky_MCP;
-        public string HeadName;
+        public Tasks.Components.Containers.NormalizedLandmark Wrist { get; }
+        public Tasks.Components.Containers.NormalizedLandmark Index_MCP { get; }
+        public Tasks.Components.Containers.NormalizedLandmark Pinky_MCP { get; }
+        public string HeadName { get; }
 
         public Palm(Tasks.Components.Containers.NormalizedLandmark wrist,
                     Tasks.Components.Containers.NormalizedLandmark index_MCP,

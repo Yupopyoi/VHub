@@ -127,4 +127,5 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             PartName = partName;
         }
     }
+
 }// namespace Mediapipe.Unity.Yupopyoi.Allocator

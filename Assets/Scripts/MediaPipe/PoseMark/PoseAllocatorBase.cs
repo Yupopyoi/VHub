@@ -56,7 +56,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         protected void SetFixedAxis(FixedAxis fixedAxis)
         {
-            this.fixedAxis = fixedAxis; 
+            this.fixedAxis = fixedAxis;
         }
 
         public LocalRotation LocalRotation()
