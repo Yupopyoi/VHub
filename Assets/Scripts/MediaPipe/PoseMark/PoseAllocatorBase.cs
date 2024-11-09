@@ -6,11 +6,8 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading;
-using UnityEditor;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
@@ -37,7 +34,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             this.landmarks = landmarks;
             this.fixedAxis = fixedAxis;
 
-            var localAngle = bodyPart.transform.eulerAngles;
+            var localAngle = bodyPart.transform.localEulerAngles;
             initialRotation.X = localAngle.x;
             initialRotation.Y = localAngle.y;
             initialRotation.Z = localAngle.z;
@@ -87,45 +84,11 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             bodyPartAverageLocalRotation = sum / localRotationsCache.Count;
         }
 
-        protected void ApplyToModel()
+        protected virtual void ApplyToModel()
         {
             var localAngle = bodyPart.transform.localEulerAngles;
 
             if(fixedAxis.x)
-            {
-                localAngle.x = initialRotation.X;
-            }
-            else
-            {
-                localAngle.x = bodyPartAverageLocalRotation.X;
-            }
-
-            if (fixedAxis.y)
-            {
-                localAngle.y = initialRotation.Y;
-            }
-            else
-            {
-                localAngle.y = bodyPartAverageLocalRotation.Y;
-            }
-
-            if (fixedAxis.z)
-            {
-                localAngle.z = initialRotation.Z;
-            }
-            else
-            {
-                localAngle.z = bodyPartAverageLocalRotation.Z;
-            }
-
-            bodyPart.transform.eulerAngles = localAngle;
-        }
-
-        protected void ApplyLocalToModel()
-        {
-            var localAngle = bodyPart.transform.localEulerAngles;
-
-            if (fixedAxis.x)
             {
                 localAngle.x = initialRotation.X;
             }

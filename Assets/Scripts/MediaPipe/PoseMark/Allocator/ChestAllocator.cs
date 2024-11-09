@@ -4,9 +4,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
@@ -15,18 +12,10 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
     public class ChestAllocator : PoseAllocatorBase
     {
         /* 
-         * [Detection]
-         * 
          *  LandmarksIndex     Body parts    ïîà 
          * 
          *        0	          left shoulder	 ç∂å®
          *        1          right shoulder	 âEå®
-         * 
-         * [Controll]
-         * 
-         *  J_Bip_C_Chest local-y : ì∑ëÃâ°îPÇËÅ@  (Rotation around the longitudinal axis)
-         *  J_Bip_C_Chest local-z : ì∑ëÃç∂âEì|ÇµÅ@(Rotation around the sagittal axis)
-         *  
          */
 
         public ChestAllocator(GameObject bodyPart,
@@ -36,14 +25,14 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         public override void Allocate(LocalRotation? parentRotation = null)
         {
-            Vector3  leftShoulderVector = VectorUtils.LandmarkToUnityVector(landmarks[0]);
-            Vector3 rightShoulderVector = VectorUtils.LandmarkToUnityVector(landmarks[1]);
+            var  leftShoulderVector = VectorUtils.LandmarkToUnityVector(landmarks[0]);
+            var rightShoulderVector = VectorUtils.LandmarkToUnityVector(landmarks[1]);
 
-            LocalRotation shoulderRotation = VectorUtils.CalculateRotationOfVectorsByTwoLandmarks(leftShoulderVector, rightShoulderVector);
+            LocalRotation shoulderRotation = VectorUtils.CalculateRawRotation(leftShoulderVector, rightShoulderVector);
 
-            LocalRotation currentLocalRotation = new(initialRotation.X, 
-                                                     WrapAngle360(initialRotation.Y + shoulderRotation.Y),
-                                                     MakeNearZeroContinuous(90 - (initialRotation.Z + shoulderRotation.Z)));
+            LocalRotation currentLocalRotation = new(initialRotation.X,  // Not Changed (Implement with Chest instead.)
+                                                     MakeNearZeroContinuous(initialRotation.Y + shoulderRotation.Y + 90),
+                                                     initialRotation.Z); // Not Changed (Implement with Chest instead.)
 
             AddCurrentLocalRotation(currentLocalRotation);
 

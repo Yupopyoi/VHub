@@ -54,7 +54,7 @@ namespace Mediapipe.Unity
         }
         annotation.Draw(_currentTarget.poseLandmarks, _visualizeZ);
 
-                Debug.Log(_currentTarget.poseLandmarks[0].landmarks[13].z + " / " + _currentTarget.poseLandmarks[0].landmarks[11].z + " / " + (_currentTarget.poseLandmarks[0].landmarks[13].z - _currentTarget.poseLandmarks[0].landmarks[11].z));
+                Debug.Log(_currentTarget.poseLandmarks[0].landmarks[11] + " / " + _currentTarget.poseLandmarks[0].landmarks[12]);
       }
     }
   }

@@ -83,6 +83,10 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             HeadName = headName;
         }
 
+        /// <summary>
+        /// Returns the normal vector of the palm.
+        /// éËÇÃÇ–ÇÁÇÃñ@ê¸ÉxÉNÉgÉãÇï‘ÇµÇ‹Ç∑ÅBóvÇÕÅAéËÇÃÇ–ÇÁÇ…ëŒÇµÇƒêÇíºÇ»ÉxÉNÉgÉãÇ≈Ç∑ÅB
+        /// </summary>
         public readonly Vector3 NormalVector()
         {
             Vector3 pointA = new(Wrist.x, Wrist.y, Wrist.z);
@@ -96,19 +100,36 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             normalVector.Normalize();
 
-            return normalVector;
+            return normalVector * -1.0f;
         }
 
-        public readonly Vector3 PerpendicularVector()
+        /// <summary>
+        /// PalmVector is actually a vector going between the middle and ring fingers.
+        /// éËéÒÇ©ÇÁÅAíÜéwÅEñÚéwÇÃïtÇØç™ÇÃíÜä‘Ç÷å¸Ç©Ç§ÉxÉNÉgÉã
+        ///
+        ///                      ÅQÅQÅQ__
+        ///           OÅE      Å^Å@Å@ÅQÅQÉmÅQÅQÅQ
+        ///                  -'   Å@     I:ÅQÅQÅQ_)_
+        ///  PalmVector   AÅE------------>M :ÅQÅQÅQÅQ)
+        ///                               :ÅQÅQÅQ__)
+        ///                  -§Å@Å@     P:ÅQÅQÅQ)
+        ///                    ÅPÅPÅPÅPÅP
+        /// AM = AI + IM = (OI - OA) + (OP - OI) / 2 = (OP + OI) / 2 - OA
+        /// 
+        /// </summary>
+        public readonly Vector3 PalmVector()
         {
-            var vectorM = new Vector3(Index_MCP.x + Pinky_MCP.x, Index_MCP.y + Pinky_MCP.y, Index_MCP.z + Pinky_MCP.z) * 0.5f;
+            var vectorM = new Vector3(Index_MCP.x + Pinky_MCP.x, Index_MCP.y + Pinky_MCP.y, Index_MCP.z +Pinky_MCP.z) * 0.5f;
             return new Vector3(vectorM.x - Wrist.x, vectorM.y - Wrist.y, vectorM.z - Wrist.z);
         }
 
+        /// <summary>
+        /// Returns Length of PalmVector.
+        /// </summary>
         public readonly float PalmLength()
         {
-            var perpendicularVector = PerpendicularVector();
-            return perpendicularVector.magnitude;
+            var palmVector = PalmVector();
+            return palmVector.magnitude;
         }
 
         public override readonly string ToString()
@@ -125,11 +146,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         FingersTip _rightFingersTip;
         Palm _leftPalm;
         Palm _rightPalm;
-
-        private void Start()
-        {
-            
-        }
 
         public FingersTip LeftFingersTip => _leftFingersTip;
         public FingersTip RightFingersTip => _rightFingersTip;

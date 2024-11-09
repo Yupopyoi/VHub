@@ -5,10 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
@@ -16,19 +13,14 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
     public class SpineAllocator : PoseAllocatorBase
     {
         /* 
-         * [Detection]
-         * 
          *  LandmarksIndex     Body parts    •”ˆÊ
          * 
          *        0	          left shoulder	 ¶Œ¨
          *        1          right shoulder	 ‰EŒ¨
          *        2             left hip     ¶K
 	     *        3            right hip     ‰EK
-         * 
-         * [Controll]
-         * 
-         *  J_Bip_C_Spine local-x : “·‘Ìã‰º“|‚µ
-         *  
+	     *        4            left elbow    ¶•I
+	     *        5           right elbow    ‰E•I
          */
 
         public SpineAllocator(GameObject bodyPart,
@@ -38,45 +30,38 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         public override void Allocate(LocalRotation? globalRotation = null)
         {
-            LocalRotation currentLocalRotation;
+            // ---------------------------------- BASE ---------------------------------------
+            
+            var shoulderAverageVector = VectorUtils.AverageTwoVector(VectorUtils.LandmarkToUnityVector(landmarks[0]), VectorUtils.LandmarkToUnityVector(landmarks[1]));
+            var hipAverageVector = VectorUtils.AverageTwoVector(VectorUtils.LandmarkToUnityVector(landmarks[2]), VectorUtils.LandmarkToUnityVector(landmarks[3]));
 
-            if ((landmarks[2].y > 1.0) && (landmarks[3].y > 1.0))
-            {
-                currentLocalRotation = AllocateSitting();
-            }
-            else 
-            {
-                currentLocalRotation = AllocateStanding();
-            }
+            var spine = shoulderAverageVector - hipAverageVector;
 
+            float angle = (float)Math.Acos(spine.y / Math.Sqrt(spine.x * spine.x + spine.y * spine.y + spine.z * spine.z));
+            float angleDegrees = angle * (180.0f / (float)Math.PI);
 
+            LocalRotation shoulderRotation = VectorUtils.CalculateRawRotation(VectorUtils.LandmarkToUnityVector(landmarks[0]), VectorUtils.LandmarkToUnityVector(landmarks[1]));
+
+            // ------------------------------- CORRECTION ------------------------------------
+
+            var leftArmRotation  = VectorUtils.CalculateRawRotation(VectorUtils.LandmarkToUnityVector(landmarks[0]), VectorUtils.LandmarkToUnityVector(landmarks[4]));
+            var rightArmRotation = VectorUtils.CalculateRawRotation(VectorUtils.LandmarkToUnityVector(landmarks[1]), VectorUtils.LandmarkToUnityVector(landmarks[5]));
+
+            int rotationMaxCorrection = 20;
+
+            float leftArmCorrection  = Math.Abs( leftArmRotation.Z - 180) * rotationMaxCorrection / 180.0f;
+            float rightArmCorrection = Math.Abs(rightArmRotation.Z - 180) * rotationMaxCorrection / 180.0f;
+
+            // ----------------------------- APPLY ROTATION ----------------------------------
+
+            var currentLocalRotation = new LocalRotation(MakeNearZeroContinuous(angleDegrees), 
+                                                         initialRotation.Y, 
+                                                         MakeNearZeroContinuous(90 - (initialRotation.Z + shoulderRotation.Z) + leftArmCorrection - rightArmCorrection));
+            
             AddCurrentLocalRotation(currentLocalRotation);
 
             UpdateBodyPartAverageLocalRotation();
             ApplyToModel();
         }
-
-        private LocalRotation AllocateSitting()
-        {
-            float shoulderAverageY = (landmarks[0].y + landmarks[1].y) * 0.5f;
-            float hipAverageY = (landmarks[2].y + landmarks[3].y) * 0.5f;
-
-            float shoulderAverageZ = (landmarks[0].z + landmarks[1].z) * 0.5f;
-            float hipAverageZ = (landmarks[2].z + landmarks[3].z) * 0.5f;
-
-            float diffY = shoulderAverageY - hipAverageY;
-            float diffZ = shoulderAverageZ - hipAverageZ;
-
-            float rotate_x_deg = initialRotation.X + (float)(Math.Atan((double)diffZ / diffY) * 180 / Math.PI);
-
-
-            return new LocalRotation(rotate_x_deg, initialRotation.Y, initialRotation.Z);
-        }
-
-        private LocalRotation AllocateStanding()
-        {
-            return new LocalRotation(initialRotation.X, initialRotation.Y, initialRotation.Z);
-        }
     }
 } // Mediapipe.Unity.Yupopyoi.Allocator
-
