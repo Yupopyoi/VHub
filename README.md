@@ -22,13 +22,22 @@ Docs are [here](https://github.com/Yupopyoi/VHub/tree/feature/MediaPipeDevelop/R
 
 ![SampleGif](https://github.com/Yupopyoi/VHub/blob/feature/MediaPipeDevelop/Reference/Gif/LeftArmSample.gif)
 
-I'm implementing the movement of the left arm...
-I know that the movement is sometimes unnatural, and I will modify that in the future.
-In addition, the slight delay is intentional.
+(Updated on Nov. 11, 2024)  
+I'm implementing the movement of the left arm...  
+I know that the movement is sometimes unnatural, and I will modify that in the future.  
+In addition, the slight delay is intentional.  
 
 ## Environment
 
 Unity 2022.3.42f1
+
+## How to Use
+
+(Under construction)  
+
+- UniGLTF
+- VRM
+- VRM-1.0
 
 ## Contribution
 
@@ -37,4 +46,4 @@ I would like to express my sincere gratitude to him.
 
 ## License
 
-MIT License
+[MIT License](https://github.com/Yupopyoi/VHub/blob/main/LICENSE)
