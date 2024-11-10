@@ -22,7 +22,7 @@ Docs are [here](https://github.com/Yupopyoi/VHub/tree/feature/MediaPipeDevelop/R
 
 ![SampleGif](https://github.com/Yupopyoi/VHub/blob/feature/MediaPipeDevelop/Reference/Gif/LeftArmSample.gif)
 
-(Updated Nov. 11, 2024)
+(Updated on Nov. 11, 2024)  
 I'm implementing the movement of the left arm...  
 I know that the movement is sometimes unnatural, and I will modify that in the future.  
 In addition, the slight delay is intentional.
