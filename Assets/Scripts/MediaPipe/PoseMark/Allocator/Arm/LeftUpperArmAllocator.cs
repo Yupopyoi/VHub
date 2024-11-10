@@ -74,7 +74,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             if(localAngle.y > 270.0f)
             {
-                localAngle.y = 0.0f;
+               // localAngle.y = 0.0f;
             }
 
             bodyPart.transform.localEulerAngles = localAngle;
