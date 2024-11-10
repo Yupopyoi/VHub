@@ -126,6 +126,10 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             Rz = add_rz;
             PartName = partName;
         }
-    }
 
+        public LocalRotation AdjustmentRotation()
+        {
+            return new LocalRotation(Rx, Ry, Rz);
+        }
+    }
 }// namespace Mediapipe.Unity.Yupopyoi.Allocator
