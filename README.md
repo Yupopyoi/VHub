@@ -7,7 +7,7 @@ All you need is an RGB camera that captures you. No depth camera or motion captu
 
 The most advanced branch is "feature/MediaPipeDevelop" as of 8th November.
 
-Docs are [here](https://github.com/Yupopyoi/VHub/tree/feature/MediaPipeDevelop/Docs/MediaPipe).  
+Docs are [here](https://github.com/Yupopyoi/VHub/tree/feature/MediaPipeDevelop/Reference/MediaPipe).  
 
 ## 日本語概要
 
@@ -16,11 +16,11 @@ Docs are [here](https://github.com/Yupopyoi/VHub/tree/feature/MediaPipeDevelop/D
 
 11月8日現在、最も進んでいるブランチは "feature/MediaPipeDevelop" です。  
 
-製作における参考資料は [このディレクトリ](https://github.com/Yupopyoi/VHub/tree/feature/MediaPipeDevelop/Docs/MediaPipe) に格納してあります。
+製作における参考資料は [このディレクトリ](https://github.com/Yupopyoi/VHub/tree/feature/MediaPipeDevelop/Reference/MediaPipe) に格納してあります。
 
 ## Progress
 
-[SampleGif]()
+![SampleGif](https://github.com/Yupopyoi/VHub/blob/feature/MediaPipeDevelop/Reference/Gif/LeftArmSample.gif)
 
 I'm implementing the movement of the left arm...
 I know that the movement is sometimes unnatural, and I will modify that in the future.
