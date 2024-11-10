@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System;
 using UnityEngine;
 
 namespace Mediapipe.Unity.Yupopyoi.Allocator
@@ -107,6 +108,17 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             Quaternion rotation = Quaternion.AngleAxis(angleDeg, axis);
 
             return rotation * vectorToRotate;
+        }
+    }
+
+    public static class CommonUtils 
+    { 
+        public static float Sigmoid(float x, float k = 10)
+        {
+            if(x < 0.0f) x = 0.0f;
+            if(x > 1.0f) x = 1.0f;
+
+            return (float)(1.0 / (1.0 + Math.Exp(-k * (x - 0.5))));
         }
     }
 }
