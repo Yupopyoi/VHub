@@ -72,9 +72,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             bool flag = true;
             if (Math.Abs(leftWristVector.y) > 1.0 || flag == true)
             {
-                currentLocalRotation = new(initialRotation.X,
-                                           initialRotation.Y,
-                                           rz);
+                currentLocalRotation = new(initialRotation.X, initialRotation.Y, rz);
 
                 AddCurrentLocalRotation(currentLocalRotation);
                 UpdateBodyPartAverageLocalRotation();
@@ -85,32 +83,17 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             // ---- Rotate X (from Fingers Tip) ----
 
-            // Planes including shoulder, elbow and wrist.
-            // 肩、ひじ、手首を含む平面
-            float[] armPlane = VectorUtils.CalculatePlaneEquation(leftShoulderVector, leftElbowVector, leftWristVector);
-
-            // Distance from the middle of the base of the middle and ring fingers
-            // to a plane including the shoulder, elbow, and wrist.
-            // 中指・薬指の付け根の中間の位置から、肩、ひじ、手首を含む平面までの距離
-            float distanceFromArmPlane = VectorUtils.CalculatePointToPlaneDistance(leftWristVector + leftPalm.PalmVector(),
-                                                                                   armPlane, false);
-
             Vector2 la = new(leftArmVector.x, leftArmVector.y);
             Vector2 lp = new(leftPalm.PalmVector().x, leftPalm.PalmVector().y);
 
             float dot = Vector2.Dot(la, lp);
-            //float th = dot / leftArmVector.magnitude / leftPalm.PalmLength();
-            float th = dot / la.magnitude / lp.magnitude;
+            float theta = dot / la.magnitude / lp.magnitude;
 
             int up = lp.y  > 0 ? 1 : -1;
             
             Vector3 rotatedVector = VectorUtils.RotateVector(leftPalm.NormalVector(),
                                                              Vector3.Cross(leftPalm.NormalVector(), leftArmVector).normalized,
-                                                             //snapAngle);
-                                                             (float)(Math.Acos(th) * 180 / Math.PI * up));
-
-            int isArmUp = leftArmVector.y > 0 ? 1 : 0;
-            int isRotateVectorZ_Positive = rotatedVector.z < 0 ? 1 : -1;
+                                                             (float)(Math.Acos(theta) * 180 / Math.PI * up));
 
             float totalRotation = (float)Math.Cos((rz + parentRotation.Value.Z) / 180 * Math.PI);
 
@@ -133,8 +116,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             float EffectiveRateY = totalRotation * totalRotation;
             float EffectiveRateZ = 1.0f - totalRotation * totalRotation;
 
-            Debug.Log(EffectiveRateY + " / " + EffectiveRateZ + " | " + rotatedVector);
-
             float rx = (float)((EffectiveRateY * rotatedVector.y + EffectiveRateZ * rotatedVector.z) * 180.0f);
 
             currentLocalRotation = new(rx, initialRotation.Y, rz);
@@ -154,15 +135,17 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
                 localAngle.z += 180.0f;
                 bodyPart.transform.localEulerAngles = localAngle;
             }
-
-            reverseMessage = new ReverseMessage(rx, initialRotation.Y, rz, "LeftLowerArm");
         }
 
         protected override void ApplyToModel()
         {
-            Quaternion targetRotation = Quaternion.Euler(0, 0, bodyPartAverageLocalRotation.Z);
-            bodyPart.transform.localRotation = targetRotation;
+            if(fixedAxis.z == false)
+            {
+                Quaternion targetRotation = Quaternion.Euler(0, 0, bodyPartAverageLocalRotation.Z);
+                bodyPart.transform.localRotation = targetRotation;
+            }
+
+            reverseMessage = new ReverseMessage(0, 0, bodyPartAverageLocalRotation.Z);
         }
     }
 } // Mediapipe.Unity.Yupopyoi.Allocator
-

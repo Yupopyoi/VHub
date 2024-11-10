@@ -31,8 +31,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
          *  
          */
 
-        private bool _isArmUp;
-
         public RightUpperArmAllocator(GameObject bodyPart,
                               ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks)
                               : base(bodyPart, landmarks) { }

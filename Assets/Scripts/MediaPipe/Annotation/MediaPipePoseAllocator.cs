@@ -118,11 +118,11 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             _leftLowerArmLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[15]; // left wrist
 
             var leftPalm = _mediaPipeHandAllocator.LeftPalm;
-            _leftLowerArmAllocator.ForwardAllocate(new ForwardMessage(_leftUpperArmAllocator.Rotation(), false, true, false));
+            _leftLowerArmAllocator.ForwardAllocate(new ForwardMessage(_leftUpperArmAllocator.Rotation(), true, true, false));
             _leftLowerArmAllocator.AllocateWithHandRotation(leftPalm);
 
             // Left Upper Arm (Reverse)
-
+            _leftUpperArmAllocator.ReverseAllocate(_leftLowerArmAllocator.ReverseMessage());
 
             return;
 
