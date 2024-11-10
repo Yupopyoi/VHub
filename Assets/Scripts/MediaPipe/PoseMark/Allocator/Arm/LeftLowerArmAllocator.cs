@@ -62,11 +62,11 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             LocalRotation shoulderRotation = VectorUtils.CalculateRotationOfVectorsByTwoLandmarks(leftElbowVector, leftWristVector);
 
-            float rotation_z = WrapAngle360(initialRotation.Z - shoulderRotation.Z - parentRotation.Value.Z + 270);
+            float rz = WrapAngle360(initialRotation.Z - shoulderRotation.Z - parentRotation.Value.Z + 270);
 
-            if (rotation_z > 0 && rotation_z < 50)
+            if ((rz > 0) && (rz < 50))
             { 
-                rotation_z = 359.99f;
+                rz = 359.99f;
             }
 
             bool flag = true;
@@ -74,7 +74,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             {
                 currentLocalRotation = new(initialRotation.X,
                                            initialRotation.Y,
-                                           rotation_z);
+                                           rz);
 
                 AddCurrentLocalRotation(currentLocalRotation);
                 UpdateBodyPartAverageLocalRotation();
@@ -95,47 +95,24 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             float distanceFromArmPlane = VectorUtils.CalculatePointToPlaneDistance(leftWristVector + leftPalm.PalmVector(),
                                                                                    armPlane, false);
 
-            float snapAngle = (float)(Math.Asin(distanceFromArmPlane / leftPalm.PalmLength()) * 180.0f / Math.PI);
-
             Vector2 la = new(leftArmVector.x, leftArmVector.y);
             Vector2 lp = new(leftPalm.PalmVector().x, leftPalm.PalmVector().y);
-
-            Vector3 la3 = new(leftArmVector.x, leftArmVector.y, leftArmVector.z);
-            Vector3 lp3 = new(leftPalm.PalmVector().x, leftPalm.PalmVector().y, leftPalm.PalmVector().z);
-
-            //float dot = Vector2.Dot(leftArmVector, leftPalm.PalmVector());
 
             float dot = Vector2.Dot(la, lp);
             //float th = dot / leftArmVector.magnitude / leftPalm.PalmLength();
             float th = dot / la.magnitude / lp.magnitude;
 
-            float dot3 = Vector3.Dot(la3, lp3);
-            //float th = dot / leftArmVector.magnitude / leftPalm.PalmLength();
-            float th3 = dot3 / la3.magnitude / lp3.magnitude;
-
-            int u = lp.y  > 0 ? 1 : -1;
+            int up = lp.y  > 0 ? 1 : -1;
             
-
-            //Debug.Log(leftWristVector + leftPalm.PalmVector() + " / " + distanceFromArmPlane + " / " +
-            //   leftPalm.PalmLength() + " / " + snapAngle +" / " + bodyPartAverageLocalRotation.Z + parentRotation.Value.Z);
-
             Vector3 rotatedVector = VectorUtils.RotateVector(leftPalm.NormalVector(),
                                                              Vector3.Cross(leftPalm.NormalVector(), leftArmVector).normalized,
                                                              //snapAngle);
-                                                             (float)(Math.Acos(th) * 180 / Math.PI * u));
+                                                             (float)(Math.Acos(th) * 180 / Math.PI * up));
 
             int isArmUp = leftArmVector.y > 0 ? 1 : 0;
             int isRotateVectorZ_Positive = rotatedVector.z < 0 ? 1 : -1;
 
-            //float x_addRotation = ((rotatedVector.y - 1.0f) * 90.0f + snapAngle * isRotateVectorZ_Positive) * isRotateVectorZ_Positive;
-            //float x_addRotation = ((rotatedVector.y - 1.0f) * 90.0f + snapAngle) * isRotateVectorZ_Positive;
-            //float x_addRotation = ((rotatedVector.y - 1.0f) * 90.0f + (float)(Math.Acos(th) * 180 / Math.PI * u)) * isRotateVectorZ_Positive;
-            float x_addRotation = (rotatedVector.y - 1.0f) * 90.0f;
-            //if (x_addRotation < -180.0f) x_addRotation += 360.0f;
-            //Debug.Log(leftPalm.PalmVector() + " / " + Math.Acos(th) * 180 / Math.PI * u + " / " + Math.Acos(th3) * 180 / Math.PI * u + " / " + rotatedVector + " / " + x_addRotation);
-            //Debug.Log(parentRotation + " / " + rotation_z + " | " + leftArmVector + " / " + rotatedVector + " / " + (rotatedVector.normalized - leftArmVector.normalized));
-
-            float totalRotation = (float)Math.Cos((rotation_z + parentRotation.Value.Z) / 180 * Math.PI);
+            float totalRotation = (float)Math.Cos((rz + parentRotation.Value.Z) / 180 * Math.PI);
 
 
             //Debug.Log(totalRotation * totalRotation + " / " + (1 - totalRotation * totalRotation) + 
@@ -156,16 +133,11 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             float EffectiveRateY = totalRotation * totalRotation;
             float EffectiveRateZ = 1.0f - totalRotation * totalRotation;
 
-            float addRotation = (float)((EffectiveRateY * rotatedVector.y + EffectiveRateZ * rotatedVector.z) * 180.0f);
-            x_addRotation = addRotation;
+            Debug.Log(EffectiveRateY + " / " + EffectiveRateZ + " | " + rotatedVector);
 
-            Debug.Log(EffectiveRateY + " / " + EffectiveRateZ +
-                      " | " + rotatedVector + " / " + addRotation);
+            float rx = (float)((EffectiveRateY * rotatedVector.y + EffectiveRateZ * rotatedVector.z) * 180.0f);
 
-
-            currentLocalRotation = new(x_addRotation,
-                                       0,
-                                       rotation_z);
+            currentLocalRotation = new(rx, initialRotation.Y, rz);
 
             AddCurrentLocalRotation(currentLocalRotation);
 
@@ -182,6 +154,8 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
                 localAngle.z += 180.0f;
                 bodyPart.transform.localEulerAngles = localAngle;
             }
+
+            reverseMessage = new ReverseMessage(rx, initialRotation.Y, rz, "LeftLowerArm");
         }
 
         protected override void ApplyToModel()

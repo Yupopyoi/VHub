@@ -5,7 +5,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
@@ -40,6 +39,8 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         protected LocalRotation bodyPartAverageLocalRotation;
 
+        protected ReverseMessage reverseMessage;
+
         public PoseAllocatorBase(GameObject bodyPart, 
                                  ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks)
         {
@@ -54,11 +55,15 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         public abstract void ForwardAllocate(ForwardMessage msg);
 
+        public virtual void ReverseAllocate(ReverseMessage msg) { }
+
         protected void SetFixedAxis(FixedAxis fixedAxis)
         {
             this.fixedAxis = fixedAxis;
         }
 
+        #region FeedBack
+        
         public LocalRotation LocalRotation()
         {
             Vector3 localRotation = bodyPart.transform.localEulerAngles;
@@ -70,6 +75,12 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             Vector3 localRotation = bodyPart.transform.eulerAngles;
             return new LocalRotation(localRotation.x, localRotation.y, localRotation.z);
         }
+
+        public ReverseMessage ReverseMessage() => reverseMessage;
+
+        #endregion
+
+        #region Apply
 
         protected void AddCurrentLocalRotation(LocalRotation currentRotation)
         {
@@ -131,6 +142,10 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             bodyPart.transform.localEulerAngles = localAngle;
         }
 
+        #endregion
+
+        #region Utils
+
         // Convert to (-180 , 180]
         protected float MakeNearZeroContinuous(float? angle)
         {
@@ -146,5 +161,7 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         {
             return (angle % 360 + 360) % 360;
         }
+
+        #endregion
     }
 } // Mediapipe.Unity.Yupopyoi.Allocator

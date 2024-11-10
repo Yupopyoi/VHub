@@ -106,13 +106,11 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             var spineLocalRotation = _spineAllocator.LocalRotation();
             var torsoLocalRotation = new LocalRotation(spineLocalRotation.X , chestLocalRotation.Y, spineLocalRotation.Z);
 
-            // Left Upper Arm
+            // Left Upper Arm (Forward)
             _leftUpperArmLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; // left shoulder
             _leftUpperArmLandmarks[1] = poseTarget.poseLandmarks[0].landmarks[13]; // left elbow
             _leftUpperArmLandmarks[2] = poseTarget.poseLandmarks[0].landmarks[12]; // right shoulder
             _leftUpperArmAllocator.ForwardAllocate(new ForwardMessage(torsoLocalRotation, false, false, false));
-            return;
-
 
             // Left Lower Arm
             _leftLowerArmLandmarks[0] = poseTarget.poseLandmarks[0].landmarks[11]; // left shoulder
@@ -122,6 +120,9 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
             var leftPalm = _mediaPipeHandAllocator.LeftPalm;
             _leftLowerArmAllocator.ForwardAllocate(new ForwardMessage(_leftUpperArmAllocator.Rotation(), false, true, false));
             _leftLowerArmAllocator.AllocateWithHandRotation(leftPalm);
+
+            // Left Upper Arm (Reverse)
+
 
             return;
 

@@ -32,11 +32,11 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             Vector3 direction = leftElbowVector - leftShoulderVector;
 
-            Debug.Log(leftElbowVector + " / " + leftShoulderVector);
-
             float parentOffsetZ = 360 - parentRotation.Value.Z;
 
             var armRotation = Quaternion.FromToRotation(Vector3.right, direction.normalized).eulerAngles;
+
+            Debug.Log(leftElbowVector + " / " + leftShoulderVector + " / " + armRotation.y);
 
             var currentLocalRotation = new LocalRotation(initialRotation.X,
                                                          MakeNearZeroContinuous( armRotation.y + initialRotation.Y + parentRotation.Value.Y),
@@ -49,5 +49,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
             return;
         }
+
     }
 } // Mediapipe.Unity.Yupopyoi.Allocator
