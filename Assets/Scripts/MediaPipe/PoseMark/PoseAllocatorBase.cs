@@ -55,8 +55,6 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
 
         public abstract void ForwardAllocate(ForwardMessage msg);
 
-        public virtual void ReverseAllocate(ReverseMessage msg) { }
-
         protected void SetFixedAxis(FixedAxis fixedAxis)
         {
             this.fixedAxis = fixedAxis;
@@ -163,5 +161,52 @@ namespace Mediapipe.Unity.Yupopyoi.Allocator
         }
 
         #endregion
+    }
+
+    public abstract class PoseAllocatorWithReverseBase : PoseAllocatorBase
+    {
+        protected Queue<LocalRotation> adjustmentRotationsCache = new();
+        protected LocalRotation adjustmentAverageLocalRotation;
+
+        public PoseAllocatorWithReverseBase(GameObject bodyPart,
+                                            ReadOnlyCollection<Tasks.Components.Containers.NormalizedLandmark> landmarks)
+                                            : base(bodyPart, landmarks) { }
+
+        public abstract void ReverseAllocate(ReverseMessage msg);
+
+        protected void AddAdjustmentLocalRotation(LocalRotation adjustmentRotation)
+        {
+            adjustmentRotationsCache.Enqueue(adjustmentRotation);
+
+            if (adjustmentRotationsCache.Count > CacheLength)
+            {
+                adjustmentRotationsCache.Dequeue();
+            }
+        }
+
+        protected void UpdateAdjustmentAverageLocalRotation()
+        {
+            if (adjustmentRotationsCache.Count == 0)
+            {
+                adjustmentAverageLocalRotation = new(0, 0, 0);
+            }
+
+            LocalRotation sum = new(0, 0, 0);
+            foreach (var value in adjustmentRotationsCache)
+            {
+                sum += value;
+            }
+
+            adjustmentAverageLocalRotation = sum / adjustmentRotationsCache.Count;
+        }
+
+        protected virtual void AdjustModel()
+        {
+            var localAngle = bodyPart.transform.localEulerAngles;
+            localAngle.x += adjustmentAverageLocalRotation.X;
+            localAngle.y += adjustmentAverageLocalRotation.Y;
+            localAngle.z += adjustmentAverageLocalRotation.Z;
+            bodyPart.transform.localEulerAngles = localAngle;
+        }
     }
 } // Mediapipe.Unity.Yupopyoi.Allocator
